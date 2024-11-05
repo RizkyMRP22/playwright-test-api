@@ -1,5 +1,5 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
-import { login } from '../../endpoints/auth/login';
+import { login } from '../../endpoints/auth/postLogin';
 import { getListPoi,getListPoiWithOpportunity, getListPoiWithSearch,getListPoiWithUnvalidatedStatus, getListPoiWithValidStatus ,getListPoiWithInvalidToken, getListPoiWithoutToken } from '../../endpoints/poi/getListPoi';
 import { getTokenGenerate, getLoginToken, setLoginToken } from '../../../helpers/authTokens';
 
