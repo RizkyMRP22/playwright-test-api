@@ -1,0 +1,24 @@
+{
+  "name": "api-playwright",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "@types/chai": "^5.0.1",
+    "@types/node": "^22.8.7",
+    "ajv": "^8.17.1",
+    "chai": "^5.1.2",
+    "dotenv": "^16.4.5",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^7.3.2",
+    "@cucumber/playwright": "^3.1.0",
+    "playwright": "^1.48.2"
+  }
+}
