@@ -125,3 +125,19 @@ export const getListPoiWithoutToken = async (request: APIRequestContext): Promis
     const response = await request.get('/business-owner/v1/hero/poi/list-poi');
     return response;
 };
+
+// Negative case: get 400 response
+export const getListPoiNotValid = async (request: APIRequestContext, loginToken: string): Promise<APIResponse> => {
+    const response = await request.get('/business-owner/v1/hero/poi/list-poi', {
+        headers: {
+            'Authorization': `Bearer ${loginToken}`
+        },
+        params: {
+            page: '1',
+            size: '10',
+            sort: 'desc',
+            test: 'test'
+        }
+    });
+    return response;
+};

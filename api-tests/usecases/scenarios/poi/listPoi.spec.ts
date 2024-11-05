@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../endpoints/auth/postLogin';
-import { getListPoi,getListPoiWithSubSector, getListPoiWithOpportunity, getListPoiWithSearch, getListPoiWithUnvalidatedStatus, getListPoiWithValidStatus, getListPoiWithInvalidToken, getListPoiWithoutToken } from '../../endpoints/poi/getListPoi';
+import { getListPoi,getListPoiWithSubSector, getListPoiWithOpportunity, getListPoiWithSearch, getListPoiWithUnvalidatedStatus, getListPoiWithValidStatus, getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../endpoints/poi/getListPoi';
 import { getTokenGenerate, getLoginToken, setLoginToken } from '../../../helpers/authTokens';
 import { ECOSYSTEM_DATA, expectedColors } from '../../../helpers/constants';
 
@@ -207,7 +207,18 @@ test.describe('Get List POI Endpoint', () => {
             }
         });
     });
-    
+
+    test('Negative Case:[400] Get List POI with request not valid', async ({ request }: { request: APIRequestContext }) => {
+        const loginToken = getLoginToken();
+        const response = await getListPoiNotValid(request, loginToken);
+        const responseData = await response.json();
+        const metaMessage = "Payload request List POI invalid! Kesalahan validasi terdeteksi:\nJumlah kesalahan: 1\n1. [root]: must NOT have additional properties"
+        const subMessage = "Silakan coba lagi"
+        expect(responseData.code, 'Expected response code is 400').toBe(400);
+        expect(responseData.message, 'Expected message is "Bad Request!"').toBe("Bad Request!");
+        expect(responseData.meta.message, `Expected meta.message is "${metaMessage}"`).toBe(metaMessage);
+        expect(responseData.meta.subMessage, `Expected meta.submessage is "${subMessage}"`).toBe(subMessage);
+    });
 
     test('Negative Case: [401] Get List POI with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await getListPoiWithInvalidToken(request);
