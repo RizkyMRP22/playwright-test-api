@@ -77,6 +77,20 @@ export const getListPoiWithOpportunity = async (request: APIRequestContext, logi
     });
 };
 
+export const getListPoiWithSubSector = async (request: APIRequestContext, loginToken: string, subSector:string): Promise<APIResponse> => {
+    return await request.get('/business-owner/v1/hero/poi/list-poi', {
+        headers: {
+            'Authorization': `Bearer ${loginToken}`
+        },
+        params: {
+            page: '1',
+            size: '10',
+            sort: 'desc',
+            subSector
+        }
+    });
+};
+
 export const getListPoiWithSearch = async (request: APIRequestContext, loginToken: string, search:string): Promise<APIResponse> => {
     return await request.get('/business-owner/v1/hero/poi/list-poi', {
         headers: {
