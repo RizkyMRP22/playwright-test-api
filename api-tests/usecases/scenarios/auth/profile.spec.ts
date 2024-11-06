@@ -1,12 +1,12 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../endpoints/auth/postLogin';
 import { getProfile, getProfileWithInvalidToken, getProfileWithoutToken } from '../../endpoints/auth/getProfile';
-import { getTokenGenerate, getLoginToken, setLoginToken } from '../../../helpers/authTokens';
+import { getStorage,saveStorage } from '../../../helpers/parsingData';
 
 test.describe('Get Profile Endpoint', () => {
     
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getTokenGenerate();
+        const tokenGenerate = getStorage("generateToken");
         const response = await login(request, tokenGenerate);
         const responseData = await response.json();
 
@@ -14,11 +14,11 @@ test.describe('Get Profile Endpoint', () => {
         expect(responseData.code).toBe(200);
         expect(responseData.message).toBe("Your Request Has Been Processed");
 
-        setLoginToken(responseData.data.accessToken);
+        saveStorage("generateToken", responseData.data.accessToken);
     });
 
     test('Positive Case: [200] Get Profile', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getProfile(request, loginToken);
         const responseData = await response.json();
 

@@ -1,6 +1,5 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { generateToken, generateTokenWithInvalidCredentials } from '../../endpoints/auth/postGenerateToken';
-import { setTokenGenerate } from '../../../helpers/authTokens';
 import { saveStorage } from '../../../helpers/parsingData';
 
 test.describe('Generate Token Endpoint', () => {
@@ -12,7 +11,6 @@ test.describe('Generate Token Endpoint', () => {
         expect(responseData.code).toBe(200);
         expect(responseData.message).toBe("Your Request Has Been Processed");
 
-        setTokenGenerate(responseData.data.accessToken);
         saveStorage("generateToken", responseData.data.accessToken);
     });
 

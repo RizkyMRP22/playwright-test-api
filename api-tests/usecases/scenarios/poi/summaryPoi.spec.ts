@@ -1,14 +1,14 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../endpoints/auth/postLogin';
 import { getSummaryPoi, getSummaryPoiWithInvalidToken,getSummaryPoiWithoutToken } from '../../endpoints/poi/getSummaryPoi';
-import { getTokenGenerate, getLoginToken, setLoginToken } from '../../../helpers/authTokens';
+import { getStorage,saveStorage } from '../../../helpers/parsingData';
 import { schemas } from '../../schemas/poi/summaryPoi.schema';
 import { validateResponseSchema } from '../../../helpers/validateSchemas';
 
 test.describe('Get Profile Endpoint', () => {
     
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getTokenGenerate();
+        const tokenGenerate = getStorage("generateToken");
         const response = await login(request, tokenGenerate);
         const responseData = await response.json();
 
@@ -16,11 +16,11 @@ test.describe('Get Profile Endpoint', () => {
         expect(responseData.code).toBe(200);
         expect(responseData.message).toBe("Your Request Has Been Processed");
 
-        setLoginToken(responseData.data.accessToken);
+        saveStorage("generateToken", responseData.data.accessToken);
     });
 
     test('Positive Case:[200] Get Summary POI', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getSummaryPoi(request, loginToken);
         const responseData = await response.json();
     

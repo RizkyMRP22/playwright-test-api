@@ -1,7 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { generateToken } from '../../endpoints/auth/postGenerateToken';
 import { login, loginWithInvalidToken, loginWithInvalidCredentials } from '../../endpoints/auth/postLogin';
-import { getTokenGenerate, setTokenGenerate, setLoginToken } from '../../../helpers/authTokens';
 import { getStorage, saveStorage } from '../../../helpers/parsingData';
 
 test.describe('Login Endpoint', () => {

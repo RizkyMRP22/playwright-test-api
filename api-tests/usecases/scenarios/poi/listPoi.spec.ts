@@ -1,13 +1,13 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../endpoints/auth/postLogin';
 import { getListPoi,getListPoiWithSubSector, getListPoiWithOpportunity, getListPoiWithSearch, getListPoiWithUnvalidatedStatus, getListPoiWithValidStatus, getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../endpoints/poi/getListPoi';
-import { getTokenGenerate, getLoginToken, setLoginToken } from '../../../helpers/authTokens';
+import { getStorage,saveStorage } from '../../../helpers/parsingData';
 import { ECOSYSTEM_DATA, expectedColors } from '../../../helpers/constants';
 
 test.describe('Get List POI Endpoint', () => {
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getTokenGenerate();
+        const tokenGenerate = getStorage("generateToken");
         const response = await login(request, tokenGenerate);
         const responseData = await response.json();
 
@@ -15,11 +15,11 @@ test.describe('Get List POI Endpoint', () => {
         expect(responseData.code).toBe(200);
         expect(responseData.message).toBe("Your Request Has Been Processed");
 
-        setLoginToken(responseData.data.accessToken);
+        saveStorage("generateToken", responseData.data.accessToken);
     });
 
     test('Positive Case:[200] Get List POI', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken);
         const responseData = await response.json();
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
@@ -38,7 +38,7 @@ test.describe('Get List POI Endpoint', () => {
 
     test('Positive Case:[200] Get list POI by search but data is not found', async ({ request }: { request: APIRequestContext }) => {
         const search = 'lalalalala';
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoiWithSearch(request, loginToken, search);
         const responseData = await response.json();
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
@@ -53,7 +53,7 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Positive Case:[200] Get List POI with Unvalidated Status', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoiWithUnvalidatedStatus(request, loginToken);
         const responseData = await response.json();
         expect(response.ok()).toBeTruthy();
@@ -76,7 +76,7 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Positive Case:[200] Get List POI with Valid Status', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoiWithValidStatus(request, loginToken);
         const responseData = await response.json();
         expect(response.ok()).toBeTruthy();
@@ -101,7 +101,7 @@ test.describe('Get List POI Endpoint', () => {
     const opportunities = ['Enterprise', 'Business Service', 'Government'];
     opportunities.forEach((opportunity: any) => {
         test(`Positive Case:[200] Get List POI with ${opportunity} Opportunity`, async ({ request }: { request: APIRequestContext }) => {
-            const loginToken = getLoginToken();
+            const loginToken = getStorage("loginToken");
             const response = await getListPoiWithOpportunity(request, loginToken, opportunity);
             const responseData = await response.json();
             expect(response.ok()).toBeTruthy();
@@ -125,7 +125,7 @@ test.describe('Get List POI Endpoint', () => {
 
     test.skip('Positive Case:[200] Get List POI by sub sector filter', async ({ request }: { request: APIRequestContext }) => {
         const data = "perikanan"
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoiWithSubSector(request, loginToken, data);
         const responseData = await response.json();
         expect(response.ok()).toBeTruthy();
@@ -146,7 +146,7 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test.skip('Positive Case:[200] Validation ecosystem and sub sector in POI List is Valid', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken);
         const responseData = await response.json();
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
@@ -179,7 +179,7 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Positive Case:[200] Validation color and status in POI List is Valid', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken);
         const responseData = await response.json();
     
@@ -209,7 +209,7 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Negative Case:[400] Get List POI with request not valid', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getLoginToken();
+        const loginToken = getStorage("loginToken");
         const response = await getListPoiNotValid(request, loginToken);
         const responseData = await response.json();
         const metaMessage = "Payload request List POI invalid! Kesalahan validasi terdeteksi:\nJumlah kesalahan: 1\n1. [root]: must NOT have additional properties"
