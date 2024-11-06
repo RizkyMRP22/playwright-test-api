@@ -33,6 +33,7 @@ test.describe('Get List POI Endpoint', () => {
         responseData.data.forEach((poi: { idPoi: any }) => {
             const dataType = 'number';
             expect(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
+            saveStorage("poiId", poi.idPoi);
         });
     });
 
@@ -123,7 +124,7 @@ test.describe('Get List POI Endpoint', () => {
         });
     })
 
-    test.skip('Positive Case:[200] Get List POI by sub sector filter', async ({ request }: { request: APIRequestContext }) => {
+    test('Positive Case:[200] Get List POI by sub sector filter', async ({ request }: { request: APIRequestContext }) => {
         const data = "perikanan"
         const loginToken = getStorage("loginToken");
         const response = await getListPoiWithSubSector(request, loginToken, data);
@@ -145,7 +146,7 @@ test.describe('Get List POI Endpoint', () => {
         console.log(ecosystem)
     });
 
-    test.skip('Positive Case:[200] Validation ecosystem and sub sector in POI List is Valid', async ({ request }: { request: APIRequestContext }) => {
+    test('Positive Case:[200] Validation ecosystem and sub sector in POI List is Valid', async ({ request }: { request: APIRequestContext }) => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken);
         const responseData = await response.json();
