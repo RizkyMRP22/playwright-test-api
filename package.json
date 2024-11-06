@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npx playwright test",
-    "profilinghotd": "npx playwright test api-tests/usecases/scenarios/e2e/profilingPoiHOTD.spec.ts",
+    "profilinghotd": "npx playwright test api-tests/usecases/scenarios/e2e/hotd/submitSurvey.spec.ts",
     "report": "npx playwright show-report"
   },
   "keywords": [],
