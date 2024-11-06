@@ -17,39 +17,17 @@ test.describe('Get Poi Detail Endpoint', () => {
         saveStorage("loginToken", responseData.data.accessToken);
     });
 
-    test.skip('Positive Case:[200] Get POI Detail', async ({ request }: { request: APIRequestContext }) => {
+    test('Positive Case:[200] Get POI Detail', async ({ request }: { request: APIRequestContext }) => {
         const loginToken = getStorage("loginToken");
-        const response = await getPoiDetail(request, loginToken, "111");
+        const poiId = getStorage("poiId");
+        const response = await getPoiDetail(request, loginToken, poiId);
         const responseData = await response.json();
     
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
         expect(responseData.code, 'Expected response code is 200').toBe(200);
-        expect(responseData.message, 'Expected message is "Berhasil menampilkan data summary POI"').toBe("Berhasil menampilkan data summary POI");
-        expect(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
-    
-        // Expected keys in the data object
-        const expectedLabels = [
-            'totalPoi',
-            'unvalidated',
-            'assigned',
-            'approvalProcess',
-            'approvalProcessSubmitted',
-            'approvalProcessValidMitra',
-            'approvalProcessValidInternal',
-            'valid',
-            'invalid',
-            'notFound'
-        ];
-    
-        // Get actual keys from response data
-        const actualKeys = Object.keys(responseData.data);
-    
-        const unexpectedKeys = expectedLabels.filter(label => !actualKeys.includes(label));
-        const missingKeys = actualKeys.filter(key => !expectedLabels.includes(key));
-        console.info("missingKeys: ",missingKeys)
-        console.info("unexpectedKeys: ",unexpectedKeys)
-        expect(missingKeys.length,'Expected no have missing keys').toBe(0);
-        expect(unexpectedKeys.length, 'Expected no have unexpected keys').toBe(0);
+        expect(responseData.data.idPoi, 'Expected POI ID Match with request').toBe(poiId);
+        expect(responseData.message, 'Expected message is "success"').toBe("success");
+
     });
 
     test('Negative Case: [401] Get POI Detail with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
