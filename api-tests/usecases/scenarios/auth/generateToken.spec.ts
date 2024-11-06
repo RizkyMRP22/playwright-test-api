@@ -1,6 +1,7 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { generateToken, generateTokenWithInvalidCredentials } from '../../endpoints/auth/postGenerateToken';
 import { setTokenGenerate } from '../../../helpers/authTokens';
+import { saveStorage } from '../../../helpers/parsingData';
 
 test.describe('Generate Token Endpoint', () => {
     test('Positive Case: [200] Generate Token', async ({ request }: { request: APIRequestContext }) => {
@@ -12,6 +13,7 @@ test.describe('Generate Token Endpoint', () => {
         expect(responseData.message).toBe("Your Request Has Been Processed");
 
         setTokenGenerate(responseData.data.accessToken);
+        saveStorage("generateToken", responseData.data.accessToken);
     });
 
     test('Negative Case: [401] Generate Token with Invalid Client ID/Secret', async ({ request }: { request: APIRequestContext }) => {
