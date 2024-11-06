@@ -11,9 +11,9 @@ test.describe('Get List POI Endpoint', () => {
         const response = await login(request, tokenGenerate);
         const responseData = await response.json();
 
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("Your Request Has Been Processed");
+        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code is 200').toBe(200);
+        expect(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         saveStorage("generateToken", responseData.data.accessToken);
     });
@@ -163,9 +163,6 @@ test.describe('Get List POI Endpoint', () => {
             const actualEcosystem = item.ecosystem;
             const actualSubSector = item.subSector;
             const idPoi = item.idPoi;
-
-            console.info(`${idPoi} Expected Ecosystem: ${expectedEcosystem}, Actual Ecosystem: ${actualEcosystem}`)
-            console.info(`${idPoi} Expected Sub Sector: ${expectedSubSector},  Actual Sub Sector: ${actualSubSector}`)
     
             try{
                 expect(actualEcosystem,`${idPoi} Expected Ecosystem: ${expectedEcosystem}, Actual Ecosystem: ${actualEcosystem}`).toBe(expectedEcosystem)
@@ -199,7 +196,7 @@ test.describe('Get List POI Endpoint', () => {
                     const label = status.label;
                     const color = status.color;
     
-                    expect(color,`Expected color is ${color}, Actual color is ${expectedColors[label]} ` ).toBe(expectedColors[label]);
+                    expect(color,`${item.idPoi} ${statusIndex} Expected color is ${color}, Actual color is ${expectedColors[label]} ` ).toBe(expectedColors[label]);
                 });
             } else {
                 const statusType = index === 0 ? 'Status POI' : 'Source POI';

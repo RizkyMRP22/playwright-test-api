@@ -10,9 +10,9 @@ test.describe('Get Profile Endpoint', () => {
         const response = await login(request, tokenGenerate);
         const responseData = await response.json();
 
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("Your Request Has Been Processed");
+        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code is 200').toBe(200);
+        expect(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         saveStorage("generateToken", responseData.data.accessToken);
     });
@@ -22,24 +22,24 @@ test.describe('Get Profile Endpoint', () => {
         const response = await getProfile(request, loginToken);
         const responseData = await response.json();
 
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("User ditemukan");
+        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code is 200').toBe(200);
+        expect(responseData.message,'Expected message is "User ditemukan"').toBe("User ditemukan");
     });
 
     test('Negative Case: [401] Get Profile with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await getProfileWithInvalidToken(request);
         const responseData = await response.json();
 
-        expect(response.status()).toBe(401);
-        expect(responseData.message).toBe("Invalid token format");
+        expect(response.status(), 'Expected status code is 401').toBe(401);
+        expect(responseData.message, 'Expected message is "Invalid token format"').toBe("Invalid token format");
     });
 
     test('Negative Case: [401] Get Profile Without Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await getProfileWithoutToken(request);
         const responseData = await response.json();
 
-        expect(response.status()).toBe(401);
-        expect(responseData.message).toBe("Invalid authorization");
+        expect(response.status(), 'Expected status code is 401').toBe(401);
+        expect(responseData.message, 'Expected message is "Invalid authorization"').toBe("Invalid authorization");
     });
 });

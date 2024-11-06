@@ -7,9 +7,9 @@ test.describe('Generate Token Endpoint', () => {
         const response = await generateToken(request);
         const responseData = await response.json();
 
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("Your Request Has Been Processed");
+        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code is 200').toBe(200);
+        expect(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         saveStorage("generateToken", responseData.data.accessToken);
     });
@@ -18,7 +18,7 @@ test.describe('Generate Token Endpoint', () => {
         const response = await generateTokenWithInvalidCredentials(request);
         const responseData = await response.json();
 
-        expect(response.status()).toBe(401);
-        expect(responseData.message).toBe("Invalid Client Id or Client Secret");
+        expect(response.status(),'Expected response code is 401').toBe(401);
+        expect(responseData.message, 'Expected message is "Invalid Client Id or Client Secret"').toBe("Invalid Client Id or Client Secret");
     });
 });

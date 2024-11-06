@@ -8,9 +8,9 @@ test.describe('Login Endpoint', () => {
         const response = await generateToken(request);
         const responseData = await response.json();
 
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("Your Request Has Been Processed");
+        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code is 200').toBe(200);
+        expect(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         saveStorage("generateToken", responseData.data.accessToken);
     });
@@ -19,9 +19,9 @@ test.describe('Login Endpoint', () => {
         const tokenGenerate = getStorage("generateToken");
         const response = await login(request, tokenGenerate);
         const responseData = await response.json();
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("Your Request Has Been Processed");
+        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code is 200').toBe(200);
+        expect(responseData.message, 'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         saveStorage("loginToken", responseData.data.accessToken);
     });
@@ -30,8 +30,9 @@ test.describe('Login Endpoint', () => {
         const response = await loginWithInvalidToken(request);
         const responseData = await response.json();
 
-        expect(response.status()).toBe(401);
-        expect(responseData.message).toBe("Basic Token is not valid!");
+        expect(responseData.code, 'Expected response code is 401').toBe(401);
+        expect(responseData.message, 'Expected message is "Basic Token is not valid!"').toBe("Basic Token is not valid!");
+
     });
 
     test('Negative Case: [400] Login with Invalid Username/Password', async ({ request }: { request: APIRequestContext }) => {
@@ -39,8 +40,8 @@ test.describe('Login Endpoint', () => {
         const response = await loginWithInvalidCredentials(request, tokenGenerate);
         const responseData = await response.json();
 
-        expect(response.status()).toBe(400);
-        expect(responseData.message).toBe("NIK / Email / Password Salah");
+        expect(responseData.code, 'Expected response code is 400').toBe(400);
+        expect(responseData.message, 'Expected message is "NIK / Email / Password Salah"').toBe("NIK / Email / Password Salah");
     });
 
     test('Negative Case: [400] Login disable after 5x login Invalid Username/Password', async ({ request }: { request: APIRequestContext }) => {
@@ -49,6 +50,7 @@ test.describe('Login Endpoint', () => {
         for (let attempt = 1; attempt <= 3; attempt++) {
             const response = await loginWithInvalidCredentials2(request, tokenGenerate);
             const responseData = await response.json();
+            
             expect(responseData.code, 'Expected response code is 400').toBe(400);
             expect(responseData.message, 'Expected message is "NIK / Email / Password Salah"').toBe("NIK / Email / Password Salah");
         }
