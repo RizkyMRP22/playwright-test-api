@@ -1,8 +1,8 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
-import { login } from '../../endpoints/auth/postLogin';
-import { getListPoi,getListPoiWithSubSector, getListPoiWithOpportunity, getListPoiWithSearch, getListPoiWithUnvalidatedStatus, getListPoiWithValidStatus, getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../endpoints/poi/getListPoi';
-import { getStorage,saveStorage } from '../../../helpers/parsingData';
-import { ECOSYSTEM_DATA, expectedColors } from '../../../helpers/constants';
+import { login } from '../../../endpoints/auth/postLogin';
+import { getListPoi,getListPoiWithSubSector, getListPoiWithOpportunity, getListPoiWithSearch, getListPoiWithUnvalidatedStatus, getListPoiWithValidStatus, getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../../endpoints/poi/getListPoi';
+import { getStorage,saveStorage } from '../../../../helpers/parsingData';
+import { ECOSYSTEM_DATA, expectedColors } from '../../../../helpers/constants';
 
 test.describe('Get List POI Endpoint', () => {
 

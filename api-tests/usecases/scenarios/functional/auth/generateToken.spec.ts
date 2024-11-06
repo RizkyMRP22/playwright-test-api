@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
-import { generateToken, generateTokenWithInvalidCredentials } from '../../endpoints/auth/postGenerateToken';
-import { saveStorage } from '../../../helpers/parsingData';
+import { generateToken, generateTokenWithInvalidCredentials } from '../../../endpoints/auth/postGenerateToken';
+import { saveStorage } from '../../../../helpers/parsingData';
 
 test.describe('Generate Token Endpoint', () => {
     test('Positive Case: [200] Generate Token', async ({ request }: { request: APIRequestContext }) => {

@@ -1,7 +1,7 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
-import { login } from '../../endpoints/auth/postLogin';
-import { getPoiDetail, getPoiDetail404,getPoiDetailWithInvalidToken,getPoiDetailWithoutToken } from '../../endpoints/poi/getPoiDetail';
-import { getStorage,saveStorage } from '../../../helpers/parsingData';
+import { login } from '../../../endpoints/auth/postLogin';
+import { getPoiDetail, getPoiDetail404,getPoiDetailWithInvalidToken,getPoiDetailWithoutToken } from '../../../endpoints/poi/getPoiDetail';
+import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 
 test.describe('Get Poi Detail Endpoint', () => {
     

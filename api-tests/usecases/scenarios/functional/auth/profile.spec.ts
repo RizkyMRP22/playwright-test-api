@@ -1,7 +1,7 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
-import { login } from '../../endpoints/auth/postLogin';
-import { getProfile, getProfileWithInvalidToken, getProfileWithoutToken } from '../../endpoints/auth/getProfile';
-import { getStorage,saveStorage } from '../../../helpers/parsingData';
+import { login } from '../../../endpoints/auth/postLogin';
+import { getProfile, getProfileWithInvalidToken, getProfileWithoutToken } from '../../../endpoints/auth/getProfile';
+import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 
 test.describe('Get Profile Endpoint', () => {
     
