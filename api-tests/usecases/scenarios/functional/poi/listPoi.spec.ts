@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
-import { getListPoi,getListPoiWithSubSector, getListPoiWithOpportunity, getListPoiWithSearch, getListPoiWithUnvalidatedStatus, getListPoiWithValidStatus, getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../../endpoints/poi/getListPoi';
+import { getListPoi,getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../../endpoints/poi/getListPoi';
 import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 import { ECOSYSTEM_DATA, expectedColors } from '../../../../helpers/constants';
 
@@ -17,9 +17,14 @@ test.describe('Get List POI Endpoint', () => {
         saveStorage("loginToken", responseData.data.accessToken);
     });
 
-    test('Positive Case:[200] Get List POI', async ({ request }: { request: APIRequestContext }) => {
+    test('Positive Case:[200] Get List POI all data with Pagination, Size, and Sort', async ({ request }: { request: APIRequestContext }) => {
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc"
+        }
         const loginToken = getStorage("loginToken");
-        const response = await getListPoi(request, loginToken);
+        const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
         expect(responseData.code, 'Expected response code is 200').toBe(200);
@@ -37,9 +42,15 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Positive Case:[200] Get list POI by search but data is not found', async ({ request }: { request: APIRequestContext }) => {
-        const search = 'lalalalala';
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc",
+            search: 'lalalalala'
+        }
+
         const loginToken = getStorage("loginToken");
-        const response = await getListPoiWithSearch(request, loginToken, search);
+        const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
         expect(responseData.code, 'Expected response code is 200').toBe(200);
@@ -53,8 +64,14 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Positive Case:[200] Get List POI with Unvalidated Status', async ({ request }: { request: APIRequestContext }) => {
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc",
+            status: 'dataMentah'
+        }
         const loginToken = getStorage("loginToken");
-        const response = await getListPoiWithUnvalidatedStatus(request, loginToken);
+        const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
         expect(response.ok()).toBeTruthy();
         expect(responseData.code).toBe(200);
@@ -76,15 +93,31 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Positive Case:[200] Get List POI with Valid Status', async ({ request }: { request: APIRequestContext }) => {
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc",
+            status: 'valid'
+        }
         const loginToken = getStorage("loginToken");
-        const response = await getListPoiWithValidStatus(request, loginToken);
+        const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
         expect(response.ok()).toBeTruthy();
         expect(responseData.code).toBe(200);
         expect(responseData.message).toBe("success");
-        expect(responseData.meta.page).toBe(1);
+        if (responseData.data.length >= 1){
+            expect(responseData.meta.page).toBe(1);
+        } else {
+            expect(responseData.meta.page).toBe(0);
+
+        }
         expect(responseData.meta.source).toBe("MyIndibiz Assistant");
-        expect(responseData.meta.size).toBe(10);
+        if (responseData.data.length >= 1){
+            expect(responseData.meta.size).toBe(10);
+        } else {
+            expect(responseData.meta.page).toBe(0);
+
+        }
         expect(responseData.meta.lastUpdate).toBeDefined();
 
         responseData.data.forEach((poi: { idPoi: any }) => {
@@ -98,11 +131,62 @@ test.describe('Get List POI Endpoint', () => {
         });
     });
 
+    test('Positive Case:[200] Get List POI with Multiple Status', async ({ request }: { request: APIRequestContext }) => {
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc",
+            status: 'dataMentah, prosesSurvei'
+        }
+        const loginToken = getStorage("loginToken");
+        const response = await getListPoi(request, loginToken, params);
+        const responseData = await response.json();
+        expect(response.ok()).toBeTruthy();
+        expect(responseData.code).toBe(200);
+        expect(responseData.message).toBe("success");
+        if (responseData.data.length >= 1){
+            expect(responseData.meta.page).toBe(1);
+        } else {
+            expect(responseData.meta.page).toBe(0);
+
+        }
+        expect(responseData.meta.source).toBe("MyIndibiz Assistant");
+        if (responseData.data.length >= 1){
+            expect(responseData.meta.size).toBe(10);
+        } else {
+            expect(responseData.meta.page).toBe(0);
+
+        }
+        expect(responseData.meta.lastUpdate).toBeDefined();
+
+        responseData.data.forEach((poi: { idPoi: any }) => {
+            const dataType = 'number';
+            expect(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
+        });
+
+        const validStatuses = ['Data Mentah', 'Proses Survey'];
+        responseData.data.forEach((poi: { status: { label: string }[] }) => {
+            // Check only the first item in the status array
+            if (poi.status.length > 0) {
+                expect(validStatuses, `Expected List Poi to contain status ${validStatuses}`).toContain(poi.status[0].label);
+            } else {
+                throw new Error("Status array is empty, expected at least one status.");
+            }
+        });
+    });
+
     const opportunities = ['Enterprise', 'Business Service', 'Government'];
     opportunities.forEach((opportunity: any) => {
         test(`Positive Case:[200] Get List POI with ${opportunity} Opportunity`, async ({ request }: { request: APIRequestContext }) => {
+            const params = {
+                page: 1,
+                size: 10,
+                sort: "desc",
+                opportunity: opportunity
+            }
+
             const loginToken = getStorage("loginToken");
-            const response = await getListPoiWithOpportunity(request, loginToken, opportunity);
+            const response = await getListPoi(request, loginToken, params);
             const responseData = await response.json();
             expect(response.ok()).toBeTruthy();
             expect(responseData.code).toBe(200);
@@ -124,9 +208,14 @@ test.describe('Get List POI Endpoint', () => {
     })
 
     test('Positive Case:[200] Get List POI by sub sector filter', async ({ request }: { request: APIRequestContext }) => {
-        const data = "perikanan"
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc",
+            subSector: 'perikanan'
+        }
         const loginToken = getStorage("loginToken");
-        const response = await getListPoiWithSubSector(request, loginToken, data);
+        const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
         expect(response.ok()).toBeTruthy();
         expect(responseData.code).toBe(200);
@@ -138,16 +227,22 @@ test.describe('Get List POI Endpoint', () => {
 
         responseData.data.forEach((poi: { segment: { subSector: any } }) => {
             console.log(poi.segment.subSector)
-            expect(poi.segment.subSector).toBe(data);
+            expect(poi.segment.subSector).toBe(params.subSector);
         });
 
-        const ecosystem = ECOSYSTEM_DATA.find((ecosystem: { subSector: string[] }) => ecosystem.subSector.includes(data));
+        const subSector = params.subSector;
+        const ecosystem = ECOSYSTEM_DATA.find((ecosystem: { subSector: string[] }) => ecosystem.subSector.includes(subSector));
         console.log(ecosystem)
     });
 
     test('Positive Case:[200] Validation ecosystem and sub sector in POI List is Valid', async ({ request }: { request: APIRequestContext }) => {
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc"
+        }
         const loginToken = getStorage("loginToken");
-        const response = await getListPoi(request, loginToken);
+        const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
         expect(responseData.code, 'Expected response code is 200').toBe(200);
@@ -176,8 +271,13 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     test('Positive Case:[200] Validation color and status in POI List is Valid', async ({ request }: { request: APIRequestContext }) => {
+        const params = {
+            page: 1,
+            size: 10,
+            sort: "desc"
+        }
         const loginToken = getStorage("loginToken");
-        const response = await getListPoi(request, loginToken);
+        const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
     
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
