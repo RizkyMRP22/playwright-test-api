@@ -23,6 +23,7 @@
   "dependencies": {
     "@cucumber/cucumber": "^7.3.2",
     "@cucumber/playwright": "^3.1.0",
+    "form-data": "^4.0.1",
     "playwright": "^1.48.2"
   }
 }
