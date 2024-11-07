@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
-import { getListPoiWithUnvalidatedStatus } from '../../../endpoints/poi/getListPoi';
+import { getListPoi } from '../../../endpoints/poi/getListPoi';
 import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 import { postCancelAssignPoi }  from '../../../endpoints/poi/postCancelAssignPoi';
@@ -10,6 +10,7 @@ test.describe.serial('Cancel Assignment POI', () => {
 
     let loginToken: string;
     let poiId: string;
+    let nik: string;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await login(request);
@@ -20,33 +21,46 @@ test.describe.serial('Cancel Assignment POI', () => {
         expect.soft(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         loginToken = responseData.data.accessToken;
+        nik = responseData.data.nik;
         saveStorage("loginToken", loginToken);
     });
 
-    test('Get List POI with Data Mentah Filtering', async ({ request }: { request: APIRequestContext }) => {
-        //Get List POI
+    test('Get List POI with Data Mentah', async ({ request }) => {
+        const params = {
+            size : 1,
+            page : 10,
+            sort : 'desc',
+            status : 'dataMentah'
+        }
         const loginToken = getStorage("loginToken");
-        const responseList = await getListPoiWithUnvalidatedStatus(request, loginToken);
+        const responseList = await getListPoi(request, loginToken, params);
         const responseDataList = await responseList.json();
-        expect(responseDataList.message,`Get info POI "${responseDataList.data[0].idPoi}"`).toBe("success");
-        
-        responseDataList.data.forEach((poi: { status: { label: any } }) => {
-            const data = 'Data Mentah';
-            expect(poi.status[0].label, `Expected status is ${data}`).toBe(data);
+
+        expect(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
+
+        responseDataList.data.forEach(poi => {
+            const expectedStatus = 'Data Mentah';
+            expect(poi.status[0].label, `Expected POI ${responseDataList.data[0].idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
         });
 
-        poiId = responseDataList.data[0].idPoi
+        poiId = responseDataList.data[0].idPoi;
+        saveStorage("poiDetail", JSON.stringify(responseDataList.data[0]));
     });
 
     test('Assignment POI', async ({ request }: { request: APIRequestContext }) => {
-        // Assign POI
-        const responseAssign = await postAssignPoiHOTD(request, loginToken ,poiId);
+        const payload = {
+            poiId: poiId,
+            emailUserAgent: nik,
+            assignTo: "HOTD",
+            assignmentType: "validasi"
+        }
+
+        const responseAssign = await postAssignPoiHOTD(request, loginToken ,payload);
         const responseDataAssign = await responseAssign.json();
         expect(responseDataAssign.message, `Expected message is "${poiId}" POI berhasil diassign"`).toBe("POI berhasil diassign");
     });
 
     test('Validate Poi detail has status Proses Survei', async ({ request }: { request: APIRequestContext }) => {
-        // Get Detail POI "Proses Survey"
         const responsePoiDetail = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail = await responsePoiDetail.json();
         expect(responseDataPoiDetail.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
@@ -54,14 +68,12 @@ test.describe.serial('Cancel Assignment POI', () => {
     });
 
     test('Cancel Assignment POI', async ({ request }: { request: APIRequestContext }) => {
-        //Cancel POI
         const responseCancel = await postCancelAssignPoi(request, loginToken ,poiId);
         const responseDataCancel = await responseCancel.json();
         expect(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil diassign");
     });
 
     test('Validate Poi detail has status Data Mentah', async ({ request }: { request: APIRequestContext }) => {
-        // Get Detail POI "Data Mentah"
         const responsePoiDetail2 = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail2 = await responsePoiDetail2.json();
         expect(responseDataPoiDetail2.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);

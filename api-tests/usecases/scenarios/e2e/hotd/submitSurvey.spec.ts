@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
-import { getListPoiWithUnvalidatedStatus } from '../../../endpoints/poi/getListPoi';
+import { getListPoiWithUnvalidatedStatus, getListPoi } from '../../../endpoints/poi/getListPoi';
 import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 import { postSubmitSurveyPoi } from '../../../endpoints/poi/postSubmitSurvey';
@@ -14,6 +14,7 @@ function delay(ms) {
 test.describe.serial('Submit Survey POI', () => {
     let loginToken;
     let poiId;
+    let nik;
 
     test.beforeAll(async ({ request }) => {
         const response = await login(request);
@@ -24,19 +25,26 @@ test.describe.serial('Submit Survey POI', () => {
         expect(responseData.message, 'Expected message to be "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         loginToken = responseData.data.accessToken;
+        nik = responseData.data.nik;
         saveStorage("loginToken", loginToken);
     });
 
-    test('Get List POI with Data Mentah Filtering', async ({ request }) => {
+    test('Get List POI with Data Mentah', async ({ request }) => {
+        const params = {
+            size : 1,
+            page : 10,
+            sort : 'desc',
+            status : 'dataMentah'
+        }
         const loginToken = getStorage("loginToken");
-        const responseList = await getListPoiWithUnvalidatedStatus(request, loginToken);
+        const responseList = await getListPoi(request, loginToken, params);
         const responseDataList = await responseList.json();
 
         expect(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
 
         responseDataList.data.forEach(poi => {
             const expectedStatus = 'Data Mentah';
-            expect(poi.status[0].label, `Expected POI status to be ${expectedStatus}`).toBe(expectedStatus);
+            expect(poi.status[0].label, `Expected POI ${responseDataList.data[0].idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
         });
 
         poiId = responseDataList.data[0].idPoi;
@@ -44,7 +52,13 @@ test.describe.serial('Submit Survey POI', () => {
     });
 
     test('Assignment POI', async ({ request }) => {
-        const responseAssign = await postAssignPoiHOTD(request, loginToken, poiId);
+        const payload = {
+            poiId: poiId,
+            emailUserAgent: nik,
+            assignTo: "HOTD",
+            assignmentType: "validasi"
+        }
+        const responseAssign = await postAssignPoiHOTD(request, loginToken, payload);
         const responseDataAssign = await responseAssign.json();
         expect(responseDataAssign.message, `Expected POI "${poiId}" to be successfully assigned`).toBe("POI berhasil diassign");
     });

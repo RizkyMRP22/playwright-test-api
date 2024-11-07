@@ -1,7 +1,14 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 
-export const postAssignPoiHOTD = async (request: APIRequestContext, loginToken: string, poiId: string): Promise<APIResponse> => {
-    const idPoi = Number(poiId);
+interface Payload {
+    poiId: string,
+    emailUserAgent: string
+    assignTo: string,
+    assignmentType: string
+}
+
+export const postAssignPoiHOTD = async (request: APIRequestContext, loginToken: string, payload: Payload): Promise<APIResponse> => {
+    const idPoi = Number(payload.poiId);
     const response = await request.post('/business-owner/v1/hero/poi/assign-poi', {
         headers: {
             'Authorization': `Bearer ${loginToken}`
@@ -10,9 +17,9 @@ export const postAssignPoiHOTD = async (request: APIRequestContext, loginToken: 
             "idPoi": [
                 idPoi
             ],
-            "emailUserAgent": "920194dummy",
-            "assignTo": "HOTD",
-            "assignmentType": "validasi"
+            "emailUserAgent": payload.emailUserAgent,
+            "assignTo": payload.assignTo,
+            "assignmentType": payload.assignmentType
         }
     });
     return response;

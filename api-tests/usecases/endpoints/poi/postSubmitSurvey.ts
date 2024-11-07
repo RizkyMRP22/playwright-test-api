@@ -263,9 +263,7 @@ export const postSubmitSurveyPoi = async (request: APIRequestContext, loginToken
       "description": "Ok"
     }
   }
-
-  console.log("Request Data:", JSON.stringify(payload, null, 2)); // Log the data in a readable format
-
+  
   const response = await request.post('/business-owner/v2/hero/poi/assignment/submit', {
     headers: {
       'Authorization': `Bearer ${loginToken}`
