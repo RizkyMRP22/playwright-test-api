@@ -1,8 +1,8 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
-import { getListPoi,getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../../endpoints/poi/getListPoi';
-import { getStorage,saveStorage } from '../../../../helpers/parsingData';
-import { ECOSYSTEM_DATA, expectedColors } from '../../../../helpers/constants';
+import { getListPoi, getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../../endpoints/poi/getListPoi';
+import { getStorage, saveStorage } from '../../../../helpers/parsingData';
+import { ECOSYSTEM_DATA, expectedColors, expectedStatus, expectedOpportunities } from '../../../../helpers/constants';
 
 test.describe('Get List POI Endpoint', () => {
 
@@ -10,9 +10,9 @@ test.describe('Get List POI Endpoint', () => {
         const response = await login(request);
         const responseData = await response.json();
 
-        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
-        expect(responseData.code, 'Expected response code is 200').toBe(200);
-        expect(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
+        expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
+        expect.soft(responseData.message, 'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         saveStorage("loginToken", responseData.data.accessToken);
     });
@@ -26,17 +26,17 @@ test.describe('Get List POI Endpoint', () => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
-        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
-        expect(responseData.code, 'Expected response code is 200').toBe(200);
-        expect(responseData.message, 'Expected message is "success"').toBe("success");
-        expect(responseData.meta.page, 'Expected meta.page is  1').toBe(1);
-        expect(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
-        expect(responseData.meta.size, 'Expected meta.size is 10').toBe(10);
-        expect(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
+        expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
+        expect.soft(responseData.message, 'Expected message is "success"').toBe("success");
+        expect.soft(responseData.meta.page, 'Expected meta.page is  1').toBe(1);
+        expect.soft(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
+        expect.soft(responseData.meta.size, 'Expected meta.size is 10').toBe(10);
+        expect.soft(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
 
         responseData.data.forEach((poi: { idPoi: any }) => {
             const dataType = 'number';
-            expect(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
+            expect.soft(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
             saveStorage("poiId", poi.idPoi);
         });
     });
@@ -52,45 +52,57 @@ test.describe('Get List POI Endpoint', () => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
-        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
-        expect(responseData.code, 'Expected response code is 200').toBe(200);
-        expect(responseData.message, 'Expected message is "success"').toBe("success");
-        expect(responseData.meta.page, 'Expected meta.page is  1').toBe(0);
-        expect(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
-        expect(responseData.meta.size, 'Expected meta.size is 10').toBe(0);
-        expect(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
-        expect(responseData.data, 'Expected Data is empty object').toEqual([]);
-        expect(responseData.data.length, 'Expected Data dont have data').toBe(0);
+        expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
+        expect.soft(responseData.message, 'Expected message is "success"').toBe("success");
+        expect.soft(responseData.meta.page, 'Expected meta.page is  1').toBe(0);
+        expect.soft(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
+        expect.soft(responseData.meta.size, 'Expected meta.size is 10').toBe(0);
+        expect.soft(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
+        expect.soft(responseData.data, 'Expected Data is empty object').toEqual([]);
+        expect.soft(responseData.data.length, 'Expected Data dont have data').toBe(0);
     });
 
-    test('Positive Case:[200] Get List POI with Unvalidated Status', async ({ request }: { request: APIRequestContext }) => {
-        const params = {
-            page: 1,
-            size: 10,
-            sort: "desc",
-            status: 'dataMentah'
-        }
-        const loginToken = getStorage("loginToken");
-        const response = await getListPoi(request, loginToken, params);
-        const responseData = await response.json();
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("success");
-        expect(responseData.meta.page).toBe(1);
-        expect(responseData.meta.source).toBe("MyIndibiz Assistant");
-        expect(responseData.meta.size).toBe(10);
-        expect(responseData.meta.lastUpdate).toBeDefined();
+    expectedStatus.forEach((status: any) => {
+        test(`Positive Case:[200] Get List POI with ${status.value} Status`, async ({ request }: { request: APIRequestContext }) => {
+            const params = {
+                page: 1,
+                size: 10,
+                sort: "desc",
+                status: status.key
+            }
+            const loginToken = getStorage("loginToken");
+            const response = await getListPoi(request, loginToken, params);
+            const responseData = await response.json();
+            expect.soft(response.ok()).toBeTruthy();
+            expect.soft(responseData.code).toBe(200);
+            expect.soft(responseData.message).toBe("success");
+            if (responseData.data.length >= 1){
+                expect.soft(responseData.meta.page).toBe(1);
+            } else {
+                expect.soft(responseData.meta.page).toBe(0);
+    
+            }
+            if (responseData.data.length >= 1){
+                expect.soft(responseData.meta.size).toBe(10);
+            } else {
+                expect.soft(responseData.meta.page).toBe(0);
+    
+            }
+            expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
+            expect.soft(responseData.meta.lastUpdate).toBeDefined();
 
-        responseData.data.forEach((poi: { idPoi: any }) => {
-            const dataType = 'number';
-            expect(typeof poi.idPoi,`Expected poi id is ${dataType}`).toBe(dataType);
-        });
+            responseData.data.forEach((poi: { idPoi: any }) => {
+                const dataType = 'number';
+                expect.soft(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
+            });
 
-        responseData.data.forEach((poi: { status: { label: any } }) => {
-            const data = 'Data Mentah';
-            expect(poi.status[0].label, `Expected status is ${data}`).toBe(data);
+            responseData.data.forEach((poi: { status: { label: any } }) => {
+                expect.soft(poi.status[0].label, `Expected status is ${status.value}`).toBe(status.value);
+            });
         });
-    });
+    })
+
 
     test('Positive Case:[200] Get List POI with Valid Status', async ({ request }: { request: APIRequestContext }) => {
         const params = {
@@ -102,32 +114,32 @@ test.describe('Get List POI Endpoint', () => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("success");
+        expect.soft(response.ok()).toBeTruthy();
+        expect.soft(responseData.code).toBe(200);
+        expect.soft(responseData.message).toBe("success");
         if (responseData.data.length >= 1){
-            expect(responseData.meta.page).toBe(1);
+            expect.soft(responseData.meta.page).toBe(1);
         } else {
-            expect(responseData.meta.page).toBe(0);
+            expect.soft(responseData.meta.page).toBe(0);
 
         }
-        expect(responseData.meta.source).toBe("MyIndibiz Assistant");
         if (responseData.data.length >= 1){
-            expect(responseData.meta.size).toBe(10);
+            expect.soft(responseData.meta.size).toBe(10);
         } else {
-            expect(responseData.meta.page).toBe(0);
+            expect.soft(responseData.meta.page).toBe(0);
 
         }
-        expect(responseData.meta.lastUpdate).toBeDefined();
+        expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
+        expect.soft(responseData.meta.lastUpdate).toBeDefined();
 
         responseData.data.forEach((poi: { idPoi: any }) => {
             const dataType = 'number';
-            expect(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
+            expect.soft(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
         });
 
         responseData.data.forEach((poi: { status: { label: any } }) => {
             const data = 'Valid';
-            expect(poi.status[0].label, `Expected Status is ${data}`).toBe(data);
+            expect.soft(poi.status[0].label, `Expected Status is ${data}`).toBe(data);
         });
     });
 
@@ -141,42 +153,41 @@ test.describe('Get List POI Endpoint', () => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("success");
-        if (responseData.data.length >= 1){
-            expect(responseData.meta.page).toBe(1);
+        expect.soft(response.ok()).toBeTruthy();
+        expect.soft(responseData.code).toBe(200);
+        expect.soft(responseData.message).toBe("success");
+        if (responseData.data.length >= 1) {
+            expect.soft(responseData.meta.page).toBe(1);
         } else {
-            expect(responseData.meta.page).toBe(0);
+            expect.soft(responseData.meta.page).toBe(0);
 
         }
-        expect(responseData.meta.source).toBe("MyIndibiz Assistant");
-        if (responseData.data.length >= 1){
-            expect(responseData.meta.size).toBe(10);
+        expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
+        if (responseData.data.length >= 1) {
+            expect.soft(responseData.meta.size).toBe(10);
         } else {
-            expect(responseData.meta.page).toBe(0);
+            expect.soft(responseData.meta.page).toBe(0);
 
         }
-        expect(responseData.meta.lastUpdate).toBeDefined();
+        expect.soft(responseData.meta.lastUpdate).toBeDefined();
 
         responseData.data.forEach((poi: { idPoi: any }) => {
             const dataType = 'number';
-            expect(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
+            expect.soft(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
         });
 
         const validStatuses = ['Data Mentah', 'Proses Survey'];
         responseData.data.forEach((poi: { status: { label: string }[] }) => {
             // Check only the first item in the status array
             if (poi.status.length > 0) {
-                expect(validStatuses, `Expected List Poi to contain status ${validStatuses}`).toContain(poi.status[0].label);
+                expect.soft(validStatuses, `Expected List Poi to contain status ${validStatuses}`).toContain(poi.status[0].label);
             } else {
                 throw new Error("Status array is empty, expected at least one status.");
             }
         });
     });
 
-    const opportunities = ['Enterprise', 'Business Service', 'Government'];
-    opportunities.forEach((opportunity: any) => {
+    expectedOpportunities.forEach((opportunity: any) => {
         test(`Positive Case:[200] Get List POI with ${opportunity} Opportunity`, async ({ request }: { request: APIRequestContext }) => {
             const params = {
                 page: 1,
@@ -188,21 +199,21 @@ test.describe('Get List POI Endpoint', () => {
             const loginToken = getStorage("loginToken");
             const response = await getListPoi(request, loginToken, params);
             const responseData = await response.json();
-            expect(response.ok()).toBeTruthy();
-            expect(responseData.code).toBe(200);
-            expect(responseData.message).toBe("success");
-            expect(responseData.meta.page).toBe(1);
-            expect(responseData.meta.source).toBe("MyIndibiz Assistant");
-            expect(responseData.meta.size).toBe(10);
-            expect(responseData.meta.lastUpdate).toBeDefined();
+            expect.soft(response.ok()).toBeTruthy();
+            expect.soft(responseData.code).toBe(200);
+            expect.soft(responseData.message).toBe("success");
+            expect.soft(responseData.meta.page).toBe(1);
+            expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
+            expect.soft(responseData.meta.size).toBe(10);
+            expect.soft(responseData.meta.lastUpdate).toBeDefined();
 
             responseData.data.forEach((poi: { idPoi: any }) => {
                 const dataType = 'number';
-                expect(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
+                expect.soft(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
             });
 
             responseData.data.forEach((poi: { segment: { opportunity: any } }) => {
-                expect(poi.segment.opportunity,`Expected opportunity is ${opportunity}` ).toBe(opportunity);
+                expect.soft(poi.segment.opportunity, `Expected opportunity is ${opportunity}`).toBe(opportunity);
             });
         });
     })
@@ -217,17 +228,17 @@ test.describe('Get List POI Endpoint', () => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
-        expect(response.ok()).toBeTruthy();
-        expect(responseData.code).toBe(200);
-        expect(responseData.message).toBe("success");
-        expect(responseData.meta.page).toBe(1);
-        expect(responseData.meta.source).toBe("MyIndibiz Assistant");
-        expect(responseData.meta.size).toBe(10);
-        expect(responseData.meta.lastUpdate).toBeDefined();
+        expect.soft(response.ok()).toBeTruthy();
+        expect.soft(responseData.code).toBe(200);
+        expect.soft(responseData.message).toBe("success");
+        expect.soft(responseData.meta.page).toBe(1);
+        expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
+        expect.soft(responseData.meta.size).toBe(10);
+        expect.soft(responseData.meta.lastUpdate).toBeDefined();
 
         responseData.data.forEach((poi: { segment: { subSector: any } }) => {
             console.log(poi.segment.subSector)
-            expect(poi.segment.subSector).toBe(params.subSector);
+            expect.soft(poi.segment.subSector).toBe(params.subSector);
         });
 
         const subSector = params.subSector;
@@ -244,24 +255,24 @@ test.describe('Get List POI Endpoint', () => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
-        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
-        expect(responseData.code, 'Expected response code is 200').toBe(200);
-        expect(responseData.message, 'Expected message is "success"').toBe("success");
-        expect(responseData.meta.page, 'Expected meta.page is  1').toBe(1);
-        expect(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
-        expect(responseData.meta.size, 'Expected meta.size is 10').toBe(10);
-        expect(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
+        expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
+        expect.soft(responseData.message, 'Expected message is "success"').toBe("success");
+        expect.soft(responseData.meta.page, 'Expected meta.page is  1').toBe(1);
+        expect.soft(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
+        expect.soft(responseData.meta.size, 'Expected meta.size is 10').toBe(10);
+        expect.soft(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
 
-        responseData.data.forEach((item:any, index:any) => {
+        responseData.data.forEach((item: any, index: any) => {
             const expectedEcosystem = ECOSYSTEM_DATA[index].ecosystem;
-            const expectedSubSector = ECOSYSTEM_DATA[index].subSector; 
+            const expectedSubSector = ECOSYSTEM_DATA[index].subSector;
             const actualEcosystem = item.ecosystem;
             const actualSubSector = item.subSector;
             const idPoi = item.idPoi;
-    
-            try{
-                expect(actualEcosystem,`${idPoi} Expected Ecosystem: ${expectedEcosystem}, Actual Ecosystem: ${actualEcosystem}`).toBe(expectedEcosystem)
-                expect(actualSubSector,`${idPoi} Expected Sub Sector: ${expectedSubSector},  Actual Sub Sector: ${actualSubSector}`).toBe(expectedSubSector)
+
+            try {
+                expect.soft(actualEcosystem, `${idPoi} Expected Ecosystem: ${expectedEcosystem}, Actual Ecosystem: ${actualEcosystem}`).toBe(expectedEcosystem)
+                expect.soft(actualSubSector, `${idPoi} Expected Sub Sector: ${expectedSubSector},  Actual Sub Sector: ${actualSubSector}`).toBe(expectedSubSector)
             } catch (error) {
                 throw new Error(`${idPoi} Expected Ecosystem: ${expectedEcosystem}, Actual Ecosystem: ${actualEcosystem} \n
                     ${idPoi} Expected Sub Sector: ${expectedSubSector},  Actual Sub Sector: ${actualSubSector}`)
@@ -279,24 +290,24 @@ test.describe('Get List POI Endpoint', () => {
         const loginToken = getStorage("loginToken");
         const response = await getListPoi(request, loginToken, params);
         const responseData = await response.json();
-    
-        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
-        expect(responseData.code, 'Expected response code is 200').toBe(200);
-        expect(responseData.message, 'Expected message is "success"').toBe("success");
-        expect(responseData.meta.page, 'Expected meta.page is  1').toBe(1);
-        expect(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
-        expect(responseData.meta.size, 'Expected meta.size is 10').toBe(10);
-        expect(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
-    
+
+        expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
+        expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
+        expect.soft(responseData.message, 'Expected message is "success"').toBe("success");
+        expect.soft(responseData.meta.page, 'Expected meta.page is  1').toBe(1);
+        expect.soft(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
+        expect.soft(responseData.meta.size, 'Expected meta.size is 10').toBe(10);
+        expect.soft(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
+
         responseData.data.forEach((item: any, index: number) => {
             const statusArray = item.status;
-    
+
             if (statusArray && statusArray.length > 0) {
                 statusArray.forEach((status: { label: string; color: string }, statusIndex: number) => {
                     const label = status.label;
                     const color = status.color;
-    
-                    expect(color,`${item.idPoi} ${statusIndex} Expected color is ${color}, Actual color is ${expectedColors[label]} ` ).toBe(expectedColors[label]);
+
+                    expect.soft(color, `${item.idPoi} ${statusIndex} Expected color is ${color}, Actual color is ${expectedColors[label]} `).toBe(expectedColors[label]);
                 });
             } else {
                 const statusType = index === 0 ? 'Status POI' : 'Source POI';
@@ -311,25 +322,25 @@ test.describe('Get List POI Endpoint', () => {
         const responseData = await response.json();
         const metaMessage = "Payload request List POI invalid! Kesalahan validasi terdeteksi:\nJumlah kesalahan: 1\n1. [root]: must NOT have additional properties"
         const subMessage = "Silakan coba lagi"
-        expect(responseData.code, 'Expected response code is 400').toBe(400);
-        expect(responseData.message, 'Expected message is "Bad Request!"').toBe("Bad Request!");
-        expect(responseData.meta.message, `Expected meta.message is "${metaMessage}"`).toBe(metaMessage);
-        expect(responseData.meta.subMessage, `Expected meta.submessage is "${subMessage}"`).toBe(subMessage);
+        expect.soft(responseData.code, 'Expected response code is 400').toBe(400);
+        expect.soft(responseData.message, 'Expected message is "Bad Request!"').toBe("Bad Request!");
+        expect.soft(responseData.meta.message, `Expected meta.message is "${metaMessage}"`).toBe(metaMessage);
+        expect.soft(responseData.meta.subMessage, `Expected meta.submessage is "${subMessage}"`).toBe(subMessage);
     });
 
     test('Negative Case: [401] Get List POI with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await getListPoiWithInvalidToken(request);
         const responseData = await response.json();
 
-        expect(response.status(), 'Expected status code is 401').toBe(401);
-        expect(responseData.message, 'Expected message is "access token expired or in invalid format"').toBe("access token expired or in invalid format");
+        expect.soft(response.status(), 'Expected status code is 401').toBe(401);
+        expect.soft(responseData.message, 'Expected message is "access token expired or in invalid format"').toBe("access token expired or in invalid format");
     });
 
     test('Negative Case: [401] Get List POI Without Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await getListPoiWithoutToken(request);
         const responseData = await response.json();
 
-        expect(response.status(), 'Expected status code is 401').toBe(401);
-        expect(responseData.message, 'Expected message is "required authorization headers"').toBe("required authorization headers");
+        expect.soft(response.status(), 'Expected status code is 401').toBe(401);
+        expect.soft(responseData.message, 'Expected message is "required authorization headers"').toBe("required authorization headers");
     });
 });

@@ -70,3 +70,24 @@ export const expectedColors = {
     'Valid': '#157631',
     'Not Found': '#C72037'
 };
+
+export const expectedStatus = [
+    {
+        key: 'dataMentah',
+        value: "Data Mentah"
+    },
+    {
+        key: 'prosesSurvei',
+        value: 'Proses Survey'
+    },
+    {
+        key: 'valid',
+        value: 'valid'
+    },
+    {
+        key: 'invalid',
+        value:'Invalid'
+    }
+]
+
+export const expectedOpportunities = ['Enterprise', 'Business Service', 'Government'];
