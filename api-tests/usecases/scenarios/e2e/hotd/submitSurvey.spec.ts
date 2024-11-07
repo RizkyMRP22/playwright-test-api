@@ -4,59 +4,85 @@ import { getListPoiWithUnvalidatedStatus } from '../../../endpoints/poi/getListP
 import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 import { postSubmitSurveyPoi } from '../../../endpoints/poi/postSubmitSurvey';
+import { postUploadEvidence } from '../../../endpoints/poi/postUploadEvidence';
 import { getStorage, saveStorage } from '../../../../helpers/parsingData';
-import { info } from 'console';
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 test.describe.serial('Submit Survey POI', () => {
-    let loginToken: string;
-    let poiId: string;
+    let loginToken;
+    let poiId;
 
-    test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getStorage("generateToken");
-        const response = await login(request, tokenGenerate);
+    test.beforeAll(async ({ request }) => {
+        const response = await login(request);
         const responseData = await response.json();
 
-        expect.soft(response.ok, 'Expected response API is valid').toBeTruthy();
-        expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
-        expect.soft(responseData.message, 'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
+        expect(response.ok, 'Expected API response to be valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code to be 200').toBe(200);
+        expect(responseData.message, 'Expected message to be "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         loginToken = responseData.data.accessToken;
         saveStorage("loginToken", loginToken);
     });
 
-    test('Get List POI with Data Mentah Filtering', async ({ request }: { request: APIRequestContext }) => {
+    test('Get List POI with Data Mentah Filtering', async ({ request }) => {
         const loginToken = getStorage("loginToken");
         const responseList = await getListPoiWithUnvalidatedStatus(request, loginToken);
         const responseDataList = await responseList.json();
 
-        expect.soft(responseDataList.message, `Get info POI "${responseDataList.data[0].idPoi}"`).toBe("success");
+        expect(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
 
-        responseDataList.data.forEach((poi: { status: { label: any } }) => {
-            const data = 'Data Mentah';
-            expect.soft(poi.status[0].label, `Expected status is ${data}`).toBe(data);
+        responseDataList.data.forEach(poi => {
+            const expectedStatus = 'Data Mentah';
+            expect(poi.status[0].label, `Expected POI status to be ${expectedStatus}`).toBe(expectedStatus);
         });
 
         poiId = responseDataList.data[0].idPoi;
-        // Save POI detail for later use in the survey submission
         saveStorage("poiDetail", JSON.stringify(responseDataList.data[0]));
     });
 
-    test('Assignment POI', async ({ request }: { request: APIRequestContext }) => {
+    test('Assignment POI', async ({ request }) => {
         const responseAssign = await postAssignPoiHOTD(request, loginToken, poiId);
         const responseDataAssign = await responseAssign.json();
-        expect.soft(responseDataAssign.message, `Expected message is "${poiId}" POI berhasil diassign"`).toBe("POI berhasil diassign");
+        expect(responseDataAssign.message, `Expected POI "${poiId}" to be successfully assigned`).toBe("POI berhasil diassign");
     });
 
-    test('Validate POI detail has status Proses Survei', async ({ request }: { request: APIRequestContext }) => {
+    test('Validate POI detail has status Proses Survei', async ({ request }) => {
         const responsePoiDetail = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail = await responsePoiDetail.json();
-        expect.soft(responseDataPoiDetail.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
-        expect.soft(responseDataPoiDetail.data.status[0].label, `Expected Status POI "${poiId}" is "Proses Survey"`).toBe("Proses Survey");
+        expect(responseDataPoiDetail.data.idPoi, `Expected POI ID to match request`).toBe(poiId);
+        expect(responseDataPoiDetail.data.status[0].label, `Expected POI status to be "Proses Survey"`).toBe("Proses Survey");
+        await delay(10000);
     });
 
-    test('Submit Survey POI', async ({ request }: { request: APIRequestContext }) => {
+    test('Upload Evidence', async ({ request }: { request: APIRequestContext }) => {
+        const infoPoi = JSON.parse(getStorage("poiDetail"));
+        const dataPoi = infoPoi.idPoi;
+        const maxRetries = 5;
+        let retryCount = 0;
+        let responseUploadEvidence:any;
+        let responseDataUploadEvidence:any;
+    
+        while (retryCount < maxRetries) {
+            responseUploadEvidence = await postUploadEvidence(request, getStorage("loginToken"), dataPoi);
+            if (responseUploadEvidence.ok) {
+                responseDataUploadEvidence = await responseUploadEvidence.json();
+                expect(responseDataUploadEvidence.data.mysiisPhotoId, `Expected mysiisPhotoId to be defined`).toBeDefined();
+                saveStorage("evidence-upload", JSON.stringify(responseDataUploadEvidence.data));
+                break; 
+            } else {
+                retryCount++;
+                console.log(`Retrying Upload Evidence... Attempt ${retryCount}`);
+                await delay(1000); // Wait 1 second before retrying
+            }
+        }   
+    });
+
+    test('Submit Survey POI', async ({ request }) => {
         const infoPoi = JSON.parse(getStorage("poiDetail"));    
-        // Define the payload with corrected syntax
+        const infoEvidence = JSON.parse(getStorage("evidence-upload")); 
         const payload = {
             poiId: infoPoi.idPoi,
             poiName: infoPoi.name,
@@ -65,19 +91,16 @@ test.describe.serial('Submit Survey POI', () => {
             latitude: infoPoi.lat,
             longitude: infoPoi.long,
             opportunity: infoPoi.segment.opportunity,
-            address: infoPoi.address
+            address: infoPoi.address,
+            evidence: infoEvidence.pathUrl
         };
 
-        console.log("Payload: ",payload)
-    
-        // Use the payload instead of infoPoi when submitting the survey
         const responseSubmitSurvey = await postSubmitSurveyPoi(request, loginToken, payload);
         const responseDataSubmitSurvey = await responseSubmitSurvey.json();
-        console.log("response: ",responseDataSubmitSurvey);
-    
-        // Validate the response
-        expect.soft(responseSubmitSurvey.ok, 'Expected response to be valid').toBeTruthy();
-        expect.soft(responseDataSubmitSurvey.data.respondentId, 'Expected respondent ID to be present').toBeTruthy();
+
+        console.log(responseDataSubmitSurvey)
+
+        expect(responseSubmitSurvey.ok, 'Expected API response to be valid').toBeTruthy();
+        expect(responseDataSubmitSurvey.data.respodentId, `Expected respondent ID "${responseDataSubmitSurvey.data.respodentId}" to be present`).toBeDefined();
     });
-    
 });
