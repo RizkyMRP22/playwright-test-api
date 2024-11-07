@@ -8,8 +8,7 @@ import { validateResponseSchema } from '../../../../helpers/validateSchemas';
 test.describe('Get Summary POI Endpoint', () => {
     
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getStorage("generateToken");
-        const response = await login(request, tokenGenerate);
+        const response = await login(request);
         const responseData = await response.json();
 
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();

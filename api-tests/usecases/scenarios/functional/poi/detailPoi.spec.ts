@@ -6,8 +6,7 @@ import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 test.describe('Get Poi Detail Endpoint', () => {
     
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getStorage("generateToken");
-        const response = await login(request, tokenGenerate);
+        const response = await login(request);
         const responseData = await response.json();
 
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();

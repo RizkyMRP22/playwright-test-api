@@ -4,20 +4,9 @@ import { login, loginWithInvalidToken, loginWithInvalidCredentials,loginWithInva
 import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 
 test.describe('Login Endpoint', () => {
-    test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const response = await generateToken(request);
-        const responseData = await response.json();
-
-        expect(response.ok(), 'Expected response API is valid').toBeTruthy();
-        expect(responseData.code, 'Expected response code is 200').toBe(200);
-        expect(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
-
-        saveStorage("generateToken", responseData.data.accessToken);
-    });
 
     test('Positive Case: [200] Login', async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getStorage("generateToken");
-        const response = await login(request, tokenGenerate);
+        const response = await login(request);
         const responseData = await response.json();
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
         expect(responseData.code, 'Expected response code is 200').toBe(200);

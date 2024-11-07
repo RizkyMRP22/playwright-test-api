@@ -7,8 +7,7 @@ import { ECOSYSTEM_DATA, expectedColors } from '../../../../helpers/constants';
 test.describe('Get List POI Endpoint', () => {
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getStorage("generateToken");
-        const response = await login(request, tokenGenerate);
+        const response = await login(request);
         const responseData = await response.json();
 
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();

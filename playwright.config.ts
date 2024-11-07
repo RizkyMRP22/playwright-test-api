@@ -13,8 +13,16 @@ dotenv.config();
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
+const configData = process.env.CONFIG_AUTH;
+
+if (!configData) {
+  throw new Error("CONFIG_AUTH environment variable is not defined.");
+}
+
 export default defineConfig({
   testDir: './api-tests',
+  globalSetup: require.resolve(configData), // Provide the path as a string
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
