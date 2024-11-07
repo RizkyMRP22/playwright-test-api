@@ -12,8 +12,7 @@ test.describe.serial('Cancel Assignment POI', () => {
     let poiId: string;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const tokenGenerate = getStorage("generateToken");
-        const response = await login(request, tokenGenerate);
+        const response = await login(request);
         const responseData = await response.json();
 
         expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
