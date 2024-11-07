@@ -90,4 +90,17 @@ export const expectedStatus = [
     }
 ]
 
-export const expectedOpportunities = ['Enterprise', 'Business Service', 'Government'];
+export const expectedOpportunities = [
+    {
+        id:3,
+        name: 'Government'
+    },
+    {
+        id: 2,
+        name: 'Enterprise'
+    },
+    {
+        id: 1,
+        name: 'Business Service'
+    }
+];

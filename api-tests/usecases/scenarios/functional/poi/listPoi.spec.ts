@@ -188,12 +188,12 @@ test.describe('Get List POI Endpoint', () => {
     });
 
     expectedOpportunities.forEach((opportunity: any) => {
-        test(`Positive Case:[200] Get List POI with ${opportunity} Opportunity`, async ({ request }: { request: APIRequestContext }) => {
+        test(`Positive Case:[200] Get List POI with ${opportunity.name} Opportunity`, async ({ request }: { request: APIRequestContext }) => {
             const params = {
                 page: 1,
                 size: 10,
                 sort: "desc",
-                opportunity: opportunity
+                opportunity: opportunity.name
             }
 
             const loginToken = getStorage("loginToken");
@@ -213,7 +213,7 @@ test.describe('Get List POI Endpoint', () => {
             });
 
             responseData.data.forEach((poi: { segment: { opportunity: any } }) => {
-                expect.soft(poi.segment.opportunity, `Expected opportunity is ${opportunity}`).toBe(opportunity);
+                expect.soft(poi.segment.opportunity, `Expected opportunity is ${opportunity.name}`).toBe(opportunity.name);
             });
         });
     })

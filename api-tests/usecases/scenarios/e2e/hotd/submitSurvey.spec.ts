@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
-import { getListPoiWithUnvalidatedStatus, getListPoi } from '../../../endpoints/poi/getListPoi';
+import { getListPoi } from '../../../endpoints/poi/getListPoi';
 import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 import { postSubmitSurveyPoi } from '../../../endpoints/poi/postSubmitSurvey';
