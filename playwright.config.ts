@@ -36,19 +36,19 @@ export default defineConfig({
   reporter: [
     ['html'],
     ['json', {  outputFile: 'test-results/test-results.json' }],
-    [
-      'playwright-msteams-reporter',
-      <MsTeamsReporterOptions>{
-        webhookUrl: process.env.MSTEAMS_WEBHOOK,
-        webhookType: 'msteams', // 'powerautomate' or 'msteams'
-        title: 'Playwright Test Results',
-        notifyOnSuccess: true,
-        linkToResultsUrl: 'http://localhost:9323',
-        linkToResultsText: 'View Detailed Results',
-        mentionOnFailure: process.env.REVIEWER_TEAMS,
-        mentionOnFailureText: '{mentions} please review the test failures.',
-      },
-    ]
+    // [
+    //   'playwright-msteams-reporter',
+    //   <MsTeamsReporterOptions>{
+    //     webhookUrl: process.env.MSTEAMS_WEBHOOK,
+    //     webhookType: 'msteams', // 'powerautomate' or 'msteams'
+    //     title: 'Playwright Test Results',
+    //     notifyOnSuccess: true,
+    //     linkToResultsUrl: 'http://localhost:9323',
+    //     linkToResultsText: 'View Detailed Results',
+    //     mentionOnFailure: process.env.REVIEWER_TEAMS,
+    //     mentionOnFailureText: '{mentions} please review the test failures.',
+    //   },
+    // ]
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
