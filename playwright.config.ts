@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import type { MsTeamsReporterOptions } from "playwright-msteams-reporter";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -32,7 +33,23 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['json', {  outputFile: 'test-results/test-results.json' }],
+    [
+      'playwright-msteams-reporter',
+      <MsTeamsReporterOptions>{
+        webhookUrl: process.env.MSTEAMS_WEBHOOK,
+        webhookType: 'msteams', // 'powerautomate' or 'msteams'
+        title: 'Playwright Test Results',
+        notifyOnSuccess: true,
+        linkToResultsUrl: 'http://localhost:9323',
+        linkToResultsText: 'View Detailed Results',
+        mentionOnFailure: process.env.REVIEWER_TEAMS,
+        mentionOnFailureText: '{mentions} please review the test failures.',
+      },
+    ]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

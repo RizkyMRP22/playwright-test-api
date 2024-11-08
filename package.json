@@ -19,6 +19,7 @@
     "ajv": "^8.17.1",
     "chai": "^5.1.2",
     "dotenv": "^16.4.5",
+    "playwright-msteams-reporter": "^0.0.12",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
