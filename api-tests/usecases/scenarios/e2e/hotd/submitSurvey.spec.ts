@@ -101,18 +101,18 @@ test.describe.serial('Submit Survey POI', () => {
     });
 
     test(`Submit Survey POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
-        const infoPoi = JSON.parse(getStorage("poiDetail-e2e"));
+        // const infoPoi = JSON.parse(getStorage("poiDetail-e2e"));
         const infoEvidence = JSON.parse(getStorage("evidence-upload"));
 
         const payload = {
-            poiId: infoPoi.idPoi,
-            poiName: infoPoi.name,
-            sector: infoPoi.segment.sector,
-            subSector: infoPoi.segment.subSector,
-            latitude: infoPoi.lat,
-            longitude: infoPoi.long,
-            opportunity: infoPoi.segment.opportunity,
-            address: infoPoi.address,
+            poiId,
+            poiName: getData.name,
+            sector: getData.segment.sector,
+            subSector: getData.segment.subSector,
+            latitude: getData.lat,
+            longitude: getData.long,
+            opportunity: getData.segment.opportunity,
+            address: getData.address,
             evidence: infoEvidence.pathUrl
         };
 
