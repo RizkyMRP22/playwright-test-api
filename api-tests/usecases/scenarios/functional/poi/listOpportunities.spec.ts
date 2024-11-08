@@ -26,7 +26,13 @@ test.describe('Get List Opportunities POI Endpoint', () => {
         expect(response.ok(), 'Expected response API is valid').toBeTruthy();
         expect(responseData.code, 'Expected response code is 200').toBe(200);
         expect(responseData.message,'Expected message is "Success"').toBe("Success");
-        expect(responseData.data, 'Expected data opportunity is valid').toStrictEqual(expectedOpportunities)
+
+        const simplifiedExpectedData = expectedOpportunities.map((opportunity: { id: number, name: string }) => ({
+            id: opportunity.id,
+            name: opportunity.name
+        }));
+
+        expect(responseData.data, 'Expected data opportunity is valid').toStrictEqual(simplifiedExpectedData)
     });
 
     test('Negative Case: [401] Get List Opportunities POI with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
