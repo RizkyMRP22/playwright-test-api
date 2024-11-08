@@ -15,7 +15,7 @@ test.describe('Get Summary POI Endpoint', () => {
         expect(responseData.code, 'Expected response code is 200').toBe(200);
         expect(responseData.message,'Expected message is "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
-        saveStorage("generateToken", responseData.data.accessToken);
+        saveStorage("loginToken", responseData.data.accessToken);
     });
 
     test('Positive Case:[200] Get Summary POI', async ({ request }: { request: APIRequestContext }) => {
