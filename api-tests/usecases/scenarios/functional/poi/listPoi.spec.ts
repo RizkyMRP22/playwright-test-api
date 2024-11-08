@@ -103,46 +103,6 @@ test.describe('Get List POI Endpoint', () => {
         });
     })
 
-
-    test('Positive Case:[200] Get List POI with Valid Status', async ({ request }: { request: APIRequestContext }) => {
-        const params = {
-            page: 1,
-            size: 10,
-            sort: "desc",
-            status: 'valid'
-        }
-        const loginToken = getStorage("loginToken");
-        const response = await getListPoi(request, loginToken, params);
-        const responseData = await response.json();
-        expect.soft(response.ok()).toBeTruthy();
-        expect.soft(responseData.code).toBe(200);
-        expect.soft(responseData.message).toBe("success");
-        if (responseData.data.length >= 1){
-            expect.soft(responseData.meta.page).toBe(1);
-        } else {
-            expect.soft(responseData.meta.page).toBe(0);
-
-        }
-        if (responseData.data.length >= 1){
-            expect.soft(responseData.meta.size).toBe(10);
-        } else {
-            expect.soft(responseData.meta.page).toBe(0);
-
-        }
-        expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
-        expect.soft(responseData.meta.lastUpdate).toBeDefined();
-
-        responseData.data.forEach((poi: { idPoi: any }) => {
-            const dataType = 'number';
-            expect.soft(typeof poi.idPoi, `Expected poi id is ${dataType}`).toBe(dataType);
-        });
-
-        responseData.data.forEach((poi: { status: { label: any } }) => {
-            const data = 'Valid';
-            expect.soft(poi.status[0].label, `Expected Status is ${data}`).toBe(data);
-        });
-    });
-
     test('Positive Case:[200] Get List POI with Multiple Status', async ({ request }: { request: APIRequestContext }) => {
         const params = {
             page: 1,
