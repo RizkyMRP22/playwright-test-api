@@ -82,7 +82,7 @@ export const expectedStatus = [
     },
     {
         key: 'valid',
-        value: 'valid'
+        value: 'Valid'
     },
     {
         key: 'invalid',
