@@ -17,7 +17,7 @@ test.describe.serial('Submit Survey POI', () => {
     let nik;
     let respodentId;
 
-    test.beforeAll(async ({ request }) => {
+    test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await login(request);
         const responseData = await response.json();
 
@@ -54,7 +54,7 @@ test.describe.serial('Submit Survey POI', () => {
     
     const getData = JSON.parse(getStorage("poiDetail-e2e"))
     let dataPoi = getData.idPoi
-    test(`Assignment POI ${dataPoi}`, async ({ request }) => {
+    test(`Assignment POI ${dataPoi}`, async ({ request } : { request: APIRequestContext }) => {
         const payload = {
             poiId,
             emailUserAgent: nik,
@@ -77,7 +77,7 @@ test.describe.serial('Submit Survey POI', () => {
         await delay(5000);
     });
 
-    test(`Upload Evidence for POI ${dataPoi}`, async ({ request }) => {
+    test(`Upload Evidence for POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
         await delay(5000);
         const dataPoi = poiId;
         const maxRetries = 5;
@@ -100,7 +100,7 @@ test.describe.serial('Submit Survey POI', () => {
         }
     });
 
-    test(`Submit Survey POI ${dataPoi}`, async ({ request }) => {
+    test(`Submit Survey POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
         const infoPoi = JSON.parse(getStorage("poiDetail-e2e"));
         const infoEvidence = JSON.parse(getStorage("evidence-upload"));
 
