@@ -47,7 +47,10 @@ test.describe.serial('Cancel Assignment POI', () => {
         saveStorage("poiDetail", JSON.stringify(responseDataList.data[0]));
     });
 
-    test('Assignment POI', async ({ request }: { request: APIRequestContext }) => {
+    const getData = JSON.parse(getStorage("poiDetail-e2e"))
+    let dataPoi = getData.idPoi
+
+    test(`Assignment PO ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
         const payload = {
             poiId: poiId,
             emailUserAgent: nik,
@@ -60,20 +63,20 @@ test.describe.serial('Cancel Assignment POI', () => {
         expect(responseDataAssign.message, `Expected message is "${poiId}" POI berhasil diassign"`).toBe("POI berhasil diassign");
     });
 
-    test('Validate Poi detail has status Proses Survei', async ({ request }: { request: APIRequestContext }) => {
+    test(`Validate Poi detail ${dataPoi} has status Proses Survei`, async ({ request }: { request: APIRequestContext }) => {
         const responsePoiDetail = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail = await responsePoiDetail.json();
         expect(responseDataPoiDetail.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
         expect(responseDataPoiDetail.data.status[0].label, `Expected Status POI "${poiId}" is "Proses Survey"`).toBe("Proses Survey")
     });
 
-    test('Cancel Assignment POI', async ({ request }: { request: APIRequestContext }) => {
+    test(`Cancel Assignment POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
         const responseCancel = await postCancelAssignPoi(request, loginToken ,poiId);
         const responseDataCancel = await responseCancel.json();
         expect(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil diassign");
     });
 
-    test('Validate Poi detail has status Data Mentah', async ({ request }: { request: APIRequestContext }) => {
+    test(`Validate Poi detail ${dataPoi} has status Data Mentah`, async ({ request }: { request: APIRequestContext }) => {
         const responsePoiDetail2 = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail2 = await responsePoiDetail2.json();
         expect(responseDataPoiDetail2.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
