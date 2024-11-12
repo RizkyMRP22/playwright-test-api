@@ -4,7 +4,7 @@ import { getListPoi } from '../../../endpoints/poi/getListPoi';
 import { postAssignPoiHOTD, postAssignPoiHOTDWithInvalidToken, postAssignPoiHOTDWithoutToken } from '../../../endpoints/poi/postAssignPoi';
 import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 
-test.describe('Get Poi Detail Endpoint',{
+test.describe('Post Assign POI Endpoint',{
     annotation: {
       type: 'task',
       description: 'https://telkomdds.atlassian.net/browse/MSMA-3351',
@@ -51,7 +51,7 @@ test.describe('Get Poi Detail Endpoint',{
 
     const getData = JSON.parse(getStorage("poiDetail-e2e"))
     let dataPoi = getData.idPoi
-    test.skip(`[Positive Case:[200] Assignment POI ${dataPoi} is valid`, async ({ request } : { request: APIRequestContext }) => {
+    test(`[Positive Case:[200] Assignment POI ${dataPoi} is valid`, async ({ request } : { request: APIRequestContext }) => {
         const payload = {
             poiId,
             emailUserAgent: email,
@@ -119,7 +119,7 @@ test.describe('Get Poi Detail Endpoint',{
         const responseDataAssign = await responseAssign.json();
 
         expect.soft(responseDataAssign.message, `Expected POI "${payload.poiId}": POI Duplicate`).toBe("POI Duplicate");
-        expect.soft(responseDataAssign.meta.message, `Expected meta.message is POI sudah pernah dibuat`).toBe("Data tidak ditemukan dari sumber data");
+        expect.soft(responseDataAssign.meta.message, `Expected meta.message is POI sudah pernah dibuat`).toBe("POI sudah pernah dibuat");
         expect.soft(responseDataAssign.meta.subMessage, `Expected POI meta.subMessage is Silakan coba lagi atau hubungi helpdesk MyTEnS`).toBe("Silakan coba lagi atau hubungi helpdesk MyTEnS");
     });
 

@@ -14,7 +14,7 @@ function delay(ms) {
 test.describe.serial('Submit Survey POI', () => {
     let loginToken;
     let poiId;
-    let nik;
+    let email;
     let respodentId;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
@@ -26,7 +26,7 @@ test.describe.serial('Submit Survey POI', () => {
         expect(responseData.message, 'Expected message to be "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         loginToken = responseData.data.accessToken;
-        nik = responseData.data.nik;
+        email = responseData.data.email;
         saveStorage("loginToken", loginToken);
     });
 
@@ -57,7 +57,7 @@ test.describe.serial('Submit Survey POI', () => {
     test(`Assignment POI ${dataPoi}`, async ({ request } : { request: APIRequestContext }) => {
         const payload = {
             poiId,
-            emailUserAgent: nik,
+            emailUserAgent: email,
             assignTo: "HOTD",
             assignmentType: "validasi"
         };
@@ -101,7 +101,6 @@ test.describe.serial('Submit Survey POI', () => {
     });
 
     test(`Submit Survey POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
-        // const infoPoi = JSON.parse(getStorage("poiDetail-e2e"));
         const infoEvidence = JSON.parse(getStorage("evidence-upload"));
 
         const payload = {
