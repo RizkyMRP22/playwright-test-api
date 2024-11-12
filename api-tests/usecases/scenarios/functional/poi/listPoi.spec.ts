@@ -4,7 +4,7 @@ import { getListPoi, getListPoiWithInvalidToken, getListPoiWithoutToken, getList
 import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 import { ECOSYSTEM_DATA, expectedColors, expectedStatus, expectedOpportunities } from '../../../../helpers/constants';
 
-test.describe('Get List POI Endpoint', () => {
+test.describe('API GET List POI', () => {
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await login(request);

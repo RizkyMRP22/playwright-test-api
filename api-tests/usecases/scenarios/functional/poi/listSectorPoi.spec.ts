@@ -5,7 +5,7 @@ import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 import { expectedOpportunities } from '../../../../helpers/constants';
 
 
-test.describe('Get List Sector POI Endpoint', () => {
+test.describe('API GET List Sector', () => {
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await login(request);

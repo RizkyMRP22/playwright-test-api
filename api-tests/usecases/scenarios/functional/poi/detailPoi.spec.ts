@@ -3,7 +3,7 @@ import { login } from '../../../endpoints/auth/postLogin';
 import { getPoiDetail, getPoiDetail404,getPoiDetailWithInvalidToken,getPoiDetailWithoutToken } from '../../../endpoints/poi/getPoiDetail';
 import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 
-test.describe('Get Poi Detail Endpoint', () => {
+test.describe('API GET Poi Detail', () => {
     
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await login(request);

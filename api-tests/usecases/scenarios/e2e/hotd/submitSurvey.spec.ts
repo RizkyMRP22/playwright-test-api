@@ -11,7 +11,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-test.describe.serial('Submit Survey POI by HOTD', () => {
+test.describe.serial('[E2E] Assign POI By HOTD', () => {
     let loginToken;
     let poiId;
     let email;

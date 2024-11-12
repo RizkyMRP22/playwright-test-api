@@ -4,7 +4,7 @@ import { getListPoi } from '../../../endpoints/poi/getListPoi';
 import { getListSalesAgent } from '../../../endpoints/sales-agent/getListSalesAgent';
 import { postAssignPoiWitel } from '../../../endpoints/sales-agent/postAssignPoi';
 
-test.describe.serial('Submit Survey POI by PIC Witel', () => {
+test.describe.serial('[E2E] Assign POI from PIC Witel to SA/AR', () => {
     let loginToken;
     let poiId;
     let idUserAgent;

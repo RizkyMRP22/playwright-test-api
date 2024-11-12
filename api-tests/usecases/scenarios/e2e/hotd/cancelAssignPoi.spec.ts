@@ -6,7 +6,7 @@ import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 import { postCancelAssignPoi }  from '../../../endpoints/poi/postCancelAssignPoi';
 import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 
-test.describe.serial('Cancel Assignment POI', () => {
+test.describe.serial('[E2E] Cancel Assign POI by HOTD', () => {
 
     let loginToken: string;
     let poiId: string;

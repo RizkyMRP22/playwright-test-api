@@ -3,7 +3,7 @@ import { generateToken } from '../../../endpoints/auth/postGenerateToken';
 import { login, loginWithInvalidToken, loginWithInvalidCredentials,loginWithInvalidCredentials2 } from '../../../endpoints/auth/postLogin';
 import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 
-test.describe('Login Endpoint', () => {
+test.describe('API POST Login', () => {
     test.beforeAll('Positive Case: [200] Generate Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await generateToken(request);
         const responseData = await response.json();

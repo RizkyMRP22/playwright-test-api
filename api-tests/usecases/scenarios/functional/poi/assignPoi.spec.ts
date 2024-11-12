@@ -4,7 +4,7 @@ import { getListPoi } from '../../../endpoints/poi/getListPoi';
 import { postAssignPoiHOTD, postAssignPoiHOTDWithInvalidToken, postAssignPoiHOTDWithoutToken } from '../../../endpoints/poi/postAssignPoi';
 import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 
-test.describe('Post Assign POI Endpoint',{
+test.describe('API POST Assignment POI By HOTD',{
     annotation: {
       type: 'task',
       description: 'https://telkomdds.atlassian.net/browse/MSMA-3351',

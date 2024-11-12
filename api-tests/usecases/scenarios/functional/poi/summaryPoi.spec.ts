@@ -5,7 +5,7 @@ import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 import { schemas } from '../../../schemas/poi/summaryPoi.schema';
 import { validateResponseSchema } from '../../../../helpers/validateSchemas';
 
-test.describe('Get Summary POI Endpoint', () => {
+test.describe('API GET Summary POI', () => {
     
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await login(request);

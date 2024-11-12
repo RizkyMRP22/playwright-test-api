@@ -3,7 +3,7 @@ import { login } from '../../../endpoints/auth/postLogin';
 import { getProfile, getProfileWithInvalidToken, getProfileWithoutToken } from '../../../endpoints/auth/getProfile';
 import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 
-test.describe('Get Profile Endpoint', () => {
+test.describe('API GET Profile', () => {
     
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await login(request);

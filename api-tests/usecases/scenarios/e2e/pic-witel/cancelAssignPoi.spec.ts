@@ -6,7 +6,7 @@ import { postCancelAssignPoi }  from '../../../endpoints/poi/postCancelAssignPoi
 import { getListSalesAgent } from '../../../endpoints/sales-agent/getListSalesAgent';
 import { postAssignPoiWitel } from '../../../endpoints/sales-agent/postAssignPoi';
 
-test.describe.serial('Submit Survey POI by PIC Witel', () => {
+test.describe.serial('[E2E] Cancel Assign POI from PIC Witel', () => {
     let loginToken;
     let poiId;
     let idUserAgent;

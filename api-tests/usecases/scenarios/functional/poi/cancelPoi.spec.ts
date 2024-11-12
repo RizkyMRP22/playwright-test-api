@@ -5,7 +5,7 @@ import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
 import { postCancelAssignPoi, postCancelAssignPoiWithInvalidToken, postCancelAssignPoiWithoutToken }  from '../../../endpoints/poi/postCancelAssignPoi';
 import { getStorage,saveStorage } from '../../../../helpers/parsingData';
 
-test.describe('Post Cancel POI Endpoint',{
+test.describe('API POI Cancel POI',{
     annotation: {
       type: 'task',
       description: '',

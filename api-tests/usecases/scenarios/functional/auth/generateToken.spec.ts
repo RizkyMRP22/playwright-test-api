@@ -2,7 +2,7 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 import { generateToken, generateTokenWithInvalidCredentials } from '../../../endpoints/auth/postGenerateToken';
 import { saveStorage } from '../../../../helpers/parsingData';
 
-test.describe('Generate Token Endpoint', () => {
+test.describe('API POST Generate Token', () => {
     test('Positive Case: [200] Generate Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await generateToken(request);
         const responseData = await response.json();
