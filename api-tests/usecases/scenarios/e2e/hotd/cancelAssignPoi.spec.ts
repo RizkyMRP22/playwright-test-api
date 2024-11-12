@@ -73,7 +73,7 @@ test.describe.serial('Cancel Assignment POI', () => {
     test(`Cancel Assignment POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
         const responseCancel = await postCancelAssignPoi(request, loginToken ,poiId);
         const responseDataCancel = await responseCancel.json();
-        expect(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil diassign");
+        expect(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil di cancel");
     });
 
     test(`Validate Poi detail ${dataPoi} has status Data Mentah`, async ({ request }: { request: APIRequestContext }) => {
