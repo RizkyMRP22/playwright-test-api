@@ -50,7 +50,7 @@ test.describe.serial('Cancel Assignment POI', () => {
     const getData = JSON.parse(getStorage("poiDetail-e2e"))
     let dataPoi = getData.idPoi
 
-    test(`Assignment PO ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
+    test(`Assignment POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
         const payload = {
             poiId: poiId,
             emailUserAgent: nik,
