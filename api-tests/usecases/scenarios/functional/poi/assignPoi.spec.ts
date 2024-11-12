@@ -24,7 +24,6 @@ test.describe('Post Assign POI Endpoint',{
 
         loginToken = responseData.data.accessToken;
         email = responseData.data.email;
-        saveStorage("loginToken", loginToken);
     });
 
     test.beforeEach('Get List POI with Data Mentah', async ({ request }) => {
@@ -34,7 +33,6 @@ test.describe('Post Assign POI Endpoint',{
             sort: 'desc',
             status: 'dataMentah'
         };
-        const loginToken = getStorage("loginToken");
         const responseList = await getListPoi(request, loginToken, params);
         const responseDataList = await responseList.json();
 
@@ -49,9 +47,7 @@ test.describe('Post Assign POI Endpoint',{
         saveStorage("poiDetail-e2e", JSON.stringify(responseDataList.data[0]));
     });
 
-    const getData = JSON.parse(getStorage("poiDetail-e2e"))
-    let dataPoi = getData.idPoi
-    test(`[Positive Case:[200] Assignment POI ${dataPoi} is valid`, async ({ request } : { request: APIRequestContext }) => {
+    test(`[Positive Case:[200] Assignment POI is valid`, async ({ request } : { request: APIRequestContext }) => {
         const payload = {
             poiId,
             emailUserAgent: email,
