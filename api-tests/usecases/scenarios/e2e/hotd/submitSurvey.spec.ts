@@ -78,7 +78,7 @@ test.describe.serial('[E2E] Assign POI By HOTD', () => {
     });
 
     test(`Upload Evidence for POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
-        await delay(5000);
+        await delay(2000);
         const dataPoi = poiId;
         const maxRetries = 5;
         let retryCount = 0;
@@ -117,6 +117,7 @@ test.describe.serial('[E2E] Assign POI By HOTD', () => {
 
         const responseSubmitSurvey = await postSubmitSurveyPoi(request, loginToken, payload);
         const responseDataSubmitSurvey = await responseSubmitSurvey.json();
+        console.log(responseDataSubmitSurvey)
 
         expect(responseSubmitSurvey.ok(), 'Expected API response to be valid').toBeTruthy();
         expect(responseDataSubmitSurvey.data.respodentId, `Expected respondent ID "${responseDataSubmitSurvey.data.respodentId}" to be present`).toBeDefined();
