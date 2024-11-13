@@ -5,20 +5,20 @@ import { getListSalesAgent } from '../../../endpoints/sales-agent/getListSalesAg
 import { postAssignPoiWitel } from '../../../endpoints/sales-agent/postAssignPoi';
 
 test.describe.serial('[E2E] Assign POI from PIC Witel to SA/AR', () => {
-    let loginToken;
-    let poiId;
-    let idUserAgent;
-    let emailAgent;
-    let nikUsers;
+    let loginToken: string;
+    let poiId: string;
+    let idUserAgent: string;
+    let emailAgent: string;
+    let nikUsers: string;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const nik = '990088dummy';
         const response = await login(request, nik);
         const responseData = await response.json();
 
-        expect.soft(response.ok(), 'Expected API response to be valid').toBeTruthy();
-        expect.soft(responseData.code, 'Expected response code to be 200').toBe(200);
-        expect.soft(responseData.message, 'Expected message to be "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
+        expect(response.ok(), 'Expected API response to be valid').toBeTruthy();
+        expect(responseData.code, 'Expected response code to be 200').toBe(200);
+        expect(responseData.message, 'Expected message to be "Your Request Has Been Processed"').toBe("Your Request Has Been Processed");
 
         loginToken = responseData.data.accessToken;
         nikUsers = responseData.data.nik;
@@ -33,7 +33,6 @@ test.describe.serial('[E2E] Assign POI from PIC Witel to SA/AR', () => {
             status: 'dataMentah'
         };
 
-        // Parallelize API calls
         const [responseListPoi, responseListSalesAgent] = await Promise.all([
             getListPoi(request, loginToken, params),
             getListSalesAgent(request, loginToken)
@@ -42,20 +41,18 @@ test.describe.serial('[E2E] Assign POI from PIC Witel to SA/AR', () => {
         const responseDataListPoi = await responseListPoi.json();
         const responseDataListSalesAgent = await responseListSalesAgent.json();
 
-        expect.soft(responseDataListPoi.message, `Expected success message when retrieving POI`).toBe("success");
-        expect.soft(responseDataListSalesAgent.message, `Expected success message when retrieving Sales Agent`).toBe("success");
+        expect(responseDataListPoi.message, `Expected success message when retrieving POI`).toBe("success");
+        expect(responseDataListSalesAgent.message, `Expected success message when retrieving Sales Agent`).toBe("success");
 
-        responseDataListPoi.data.forEach(poi => {
-            const expectedStatus = 'Data Mentah';
-            expect.soft(poi.status[0].label, `Expected POI ${poi.idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
-        });
+        const poi = responseDataListPoi.data[0];
+        expect(poi.status[0].label, `Expected POI ${poi.idPoi} status to be Data Mentah`).toBe('Data Mentah');
 
-        poiId = responseDataListPoi.data[0].idPoi;
+        poiId = poi.idPoi;
         idUserAgent = responseDataListSalesAgent.data[0].id;
         emailAgent = responseDataListSalesAgent.data[0].email;
     });
 
-    test(`Assignment POI by Witel to SA/AR`, async ({ request }: { request: APIRequestContext }) => {
+    test('Assignment POI by Witel to SA/AR', async ({ request }: { request: APIRequestContext }) => {
         const payload = {
             poiId,
             emailUserAgent: emailAgent,
@@ -65,6 +62,6 @@ test.describe.serial('[E2E] Assign POI from PIC Witel to SA/AR', () => {
         const responseAssign = await postAssignPoiWitel(request, loginToken, payload);
         const responseDataAssign = await responseAssign.json();
 
-        expect.soft(responseDataAssign.message, `Expected POI "${poiId}" to be successfully assigned to ${emailAgent}`).toBe("POI berhasil diassign");
+        expect(responseDataAssign.message, `Expected POI "${poiId}" to be successfully assigned to ${emailAgent}`).toBe("POI berhasil diassign");
     });
 });

@@ -3,13 +3,9 @@ import { login } from '../../../endpoints/auth/postLogin';
 import { getListPoi } from '../../../endpoints/poi/getListPoi';
 import { postAssignPoiHOTD, postAssignPoiHOTDWithInvalidToken, postAssignPoiHOTDWithoutToken } from '../../../endpoints/poi/postAssignPoi';
 import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
+import { postAssignPoiHOTDs } from '../../../scenarios/poi/postAssignPoi';
 
-test.describe('API POST Assignment POI By HOTD',{
-    annotation: {
-      type: 'task',
-      description: 'https://telkomdds.atlassian.net/browse/MSMA-3351',
-    },
-  }, () => {
+test.describe('API POST Assignment POI By HOTD', () => {
     let loginToken;
     let poiId;
     let email;
