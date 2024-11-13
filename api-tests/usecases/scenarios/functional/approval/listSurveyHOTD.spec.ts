@@ -2,6 +2,7 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getListSurvey, getListSurveyNotValid, getListSurveyWithInvalidToken, getListSurveyWithoutToken } from '../../../endpoints/approval/getListSurvey';
 import { getSector, getSectorInvalidToken, getSectorWithoutToken } from '../../../endpoints/poi/getSector';
+import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 
 test.describe('API GET List Hasil Survey By MGR Witel', () => {
     let loginToken;
@@ -21,7 +22,7 @@ test.describe('API GET List Hasil Survey By MGR Witel', () => {
         console.log(`Login as ${nikUsers}`);
     });
 
-    test(`Positive Case:[200] Get List Hasil Survey is Valid`, async ({ request }: { request: APIRequestContext }) => {
+    test(`Positive Case:[200] Get List Hasil Survey with status Valid Internal`, async ({ request }: { request: APIRequestContext }) => {
         const payload = {
             page:1,
             size:10,
@@ -41,6 +42,7 @@ test.describe('API GET List Hasil Survey By MGR Witel', () => {
             expect.soft(data.validBy, `Expected validBy to match ${validBy}}`).toBe(validBy);
 
         });
+        saveStorage("poi-survey", JSON.stringify(responseData.data[1]));
     })
 
     test('Negative Case: [401] Get List Hasil Survey with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
