@@ -1,13 +1,14 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getListPoi } from '../../../endpoints/poi/getListPoi';
-import { postAssignPoiHOTD, postAssignPoiHOTDWithInvalidToken, postAssignPoiHOTDWithoutToken } from '../../../endpoints/poi/postAssignPoi';
-import { getStorage, saveStorage } from '../../../../helpers/parsingData';
+import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
+import { postCancelAssignPoi, postCancelAssignPoiWithInvalidToken, postCancelAssignPoiWithoutToken }  from '../../../endpoints/poi/postCancelAssignPoi';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
 
-test.describe('API POST Assignment POI By HOTD',{
+test.describe('API POI Cancel POI',{
     annotation: {
       type: 'task',
-      description: 'https://telkomdds.atlassian.net/browse/MSMA-3351',
+      description: '',
     },
   }, () => {
     let loginToken;
@@ -24,22 +25,24 @@ test.describe('API POST Assignment POI By HOTD',{
 
         loginToken = responseData.data.accessToken;
         email = responseData.data.email;
+        saveStorage("loginToken", loginToken);
     });
 
-    test.beforeEach('Get List POI with Data Mentah', async ({ request }) => {
+    test.beforeEach('Get List POI with Proses Survey', async ({ request }) => {
         const params = {
             size: 1,
             page: 10,
             sort: 'desc',
-            status: 'dataMentah'
+            status: 'prosesSurvei'
         };
+        const loginToken = getStorage("loginToken");
         const responseList = await getListPoi(request, loginToken, params);
         const responseDataList = await responseList.json();
 
         expect.soft(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
 
         responseDataList.data.forEach(poi => {
-            const expectedStatus = 'Data Mentah';
+            const expectedStatus = 'Proses Survey';
             expect.soft(poi.status[0].label, `Expected POI ${poi.idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
         });
 
@@ -47,27 +50,17 @@ test.describe('API POST Assignment POI By HOTD',{
         saveStorage("poiDetail-e2e", JSON.stringify(responseDataList.data[0]));
     });
 
-    test(`[Positive Case:[200] Assignment POI is valid`, async ({ request } : { request: APIRequestContext }) => {
-        const payload = {
-            poiId,
-            emailUserAgent: email,
-            assignTo: "HOTD",
-            assignmentType: "validasi"
-        };
-        const responseAssign = await postAssignPoiHOTD(request, loginToken, payload);
-        const responseDataAssign = await responseAssign.json();
+    test(`[Positive Case:[201] Cancel Assigment POI is valid`, async ({ request } : { request: APIRequestContext }) => {
+        const responseCancel = await postCancelAssignPoi(request, loginToken ,poiId);
+        const responseDataCancel = await responseCancel.json();
 
-        expect.soft(responseDataAssign.message, `Expected POI "${poiId}" to be successfully assigned`).toBe("POI berhasil diassign");
+        expect.soft(responseDataCancel.code, `Expected response code is 201`).toBe(201)
+        expect.soft(responseDataCancel.message, `Expected POI "${poiId}" to be successfully assigned`).toBe("POI berhasil diassign");
     });
 
-    test(`Negative Case:[400] Assignment with Invalid POI`, async ({ request } : { request: APIRequestContext }) => {
-        const payload = {
-            poiId: "123456",
-            emailUserAgent: email,
-            assignTo: "HOTD",
-            assignmentType: "validasi"
-        };
-        const responseAssign = await postAssignPoiHOTD(request, loginToken, payload);
+    test(`Negative Case:[400] Cancel Assignment POI with Invalid POI`, async ({ request } : { request: APIRequestContext }) => {
+        const poiId=  "123456"
+        const responseAssign = await postCancelAssignPoi(request, loginToken, poiId);
         const responseDataAssign = await responseAssign.json();
 
         expect.soft(responseDataAssign.message, `Expected POI "${poiId}": POI not found tidak ditemukan!`).toBe("POI not found tidak ditemukan!");
@@ -75,28 +68,18 @@ test.describe('API POST Assignment POI By HOTD',{
         expect.soft(responseDataAssign.meta.subMessage, `Expected POI meta.subMessage is Silakan coba lagi atau hubungi helpdesk MyTEnS`).toBe("Silakan coba lagi atau hubungi helpdesk MyTEnS");
     });
 
-    test('Negative Case: [401] Get POI Detail with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
-        const payload = {
-            poiId: "123456",
-            emailUserAgent: email,
-            assignTo: "HOTD",
-            assignmentType: "validasi"
-        };
-        const response = await postAssignPoiHOTDWithInvalidToken(request,payload);
+    test('Negative Case: [401] Cancel Assignment POI with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
+        const poiId=  "123456"
+        const response = await postCancelAssignPoiWithInvalidToken(request,poiId);
         const responseData = await response.json();
 
         expect.soft(response.status(), 'Expected status code is 401').toBe(401);
         expect.soft(responseData.message, 'Expected message is "access token expired or in invalid format"').toBe("access token expired or in invalid format");
     });
 
-    test('Negative Case: [401] Get POI Detail Without Token', async ({ request }: { request: APIRequestContext }) => {
-        const payload = {
-            poiId: "123456",
-            emailUserAgent: email,
-            assignTo: "HOTD",
-            assignmentType: "validasi"
-        };
-        const response = await postAssignPoiHOTDWithoutToken(request, payload);
+    test('Negative Case: [401] Cancel Assignment POI  Without Token', async ({ request }: { request: APIRequestContext }) => {
+        const poiId=  "123456"
+        const response = await postCancelAssignPoiWithoutToken(request, poiId);
         const responseData = await response.json();
 
         expect.soft(response.status(), 'Expected status code is 401').toBe(401);
@@ -104,18 +87,13 @@ test.describe('API POST Assignment POI By HOTD',{
 
     });
 
-    test(`Negative Case:[409] Assignment with Duplicate POI`, async ({ request } : { request: APIRequestContext }) => {
-        const payload = {
-            poiId: "35766044",
-            emailUserAgent: email,
-            assignTo: "HOTD",
-            assignmentType: "validasi"
-        };
-        const responseAssign = await postAssignPoiHOTD(request, loginToken, payload);
+    test(`Negative Case:[409] Cancel Assignment with Duplicate POI`, async ({ request } : { request: APIRequestContext }) => {
+        const poiId= "47213913"
+        const responseAssign = await postCancelAssignPoi(request, loginToken, poiId);
         const responseDataAssign = await responseAssign.json();
 
-        expect.soft(responseDataAssign.message, `Expected POI "${payload.poiId}": POI Duplicate`).toBe("POI Duplicate");
-        expect.soft(responseDataAssign.meta.message, `Expected meta.message is POI sudah pernah dibuat`).toBe("POI sudah pernah dibuat");
+        expect.soft(responseDataAssign.message, `Expected POI "${poiId}": POI Duplicate`).toBe("POI Duplicate");
+        expect.soft(responseDataAssign.meta.message, `Expected meta.message is POI sudah pernah dicancel`).toBe("POI sudah pernah dicancel");
         expect.soft(responseDataAssign.meta.subMessage, `Expected POI meta.subMessage is Silakan coba lagi atau hubungi helpdesk MyTEnS`).toBe("Silakan coba lagi atau hubungi helpdesk MyTEnS");
     });
 

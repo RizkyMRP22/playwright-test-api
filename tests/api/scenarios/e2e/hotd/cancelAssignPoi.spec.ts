@@ -4,7 +4,7 @@ import { getListPoi } from '../../../endpoints/poi/getListPoi';
 import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 import { postCancelAssignPoi }  from '../../../endpoints/poi/postCancelAssignPoi';
-import { getStorage,saveStorage } from '../../../../helpers/parsingData';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
 
 test.describe.serial('[E2E] Cancel Assign POI by HOTD', () => {
 
@@ -36,11 +36,11 @@ test.describe.serial('[E2E] Cancel Assign POI by HOTD', () => {
         const responseList = await getListPoi(request, loginToken, params);
         const responseDataList = await responseList.json();
 
-        expect(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
+        expect.soft(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
 
         responseDataList.data.forEach(poi => {
             const expectedStatus = 'Data Mentah';
-            expect(poi.status[0].label, `Expected POI ${responseDataList.data[0].idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
+            expect.soft(poi.status[0].label, `Expected POI ${responseDataList.data[0].idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
         });
 
         poiId = responseDataList.data[0].idPoi;
@@ -60,27 +60,27 @@ test.describe.serial('[E2E] Cancel Assign POI by HOTD', () => {
 
         const responseAssign = await postAssignPoiHOTD(request, loginToken ,payload);
         const responseDataAssign = await responseAssign.json();
-        expect(responseDataAssign.message, `Expected message is "${poiId}" POI berhasil diassign"`).toBe("POI berhasil diassign");
+        expect.soft(responseDataAssign.message, `Expected message is "${poiId}" POI berhasil diassign"`).toBe("POI berhasil diassign");
     });
 
     test(`Validate Poi detail ${dataPoi} has status Proses Survei`, async ({ request }: { request: APIRequestContext }) => {
         const responsePoiDetail = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail = await responsePoiDetail.json();
-        expect(responseDataPoiDetail.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
-        expect(responseDataPoiDetail.data.status[0].label, `Expected Status POI "${poiId}" is "Proses Survey"`).toBe("Proses Survey")
+        expect.soft(responseDataPoiDetail.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
+        expect.soft(responseDataPoiDetail.data.status[0].label, `Expected Status POI "${poiId}" is "Proses Survey"`).toBe("Proses Survey")
     });
 
     test(`Cancel Assignment POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
         const responseCancel = await postCancelAssignPoi(request, loginToken ,poiId);
         const responseDataCancel = await responseCancel.json();
-        expect(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil di cancel");
+        expect.soft(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil di cancel");
     });
 
     test(`Validate Poi detail ${dataPoi} has status Data Mentah`, async ({ request }: { request: APIRequestContext }) => {
         const responsePoiDetail2 = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail2 = await responsePoiDetail2.json();
-        expect(responseDataPoiDetail2.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
-        expect(responseDataPoiDetail2.data.status[0].label, `Expected Status POI "${poiId}" is "Data Mentah"`).toBe("Data Mentah");
+        expect.soft(responseDataPoiDetail2.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
+        expect.soft(responseDataPoiDetail2.data.status[0].label, `Expected Status POI "${poiId}" is "Data Mentah"`).toBe("Data Mentah");
     });
 
 });

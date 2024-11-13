@@ -1,6 +1,8 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import * as fs from 'fs';
-import path from 'path';
+import { getFileUpload } from '../../../../helpers/parsingData';
+
+const filename = 'background_diponogoro.jpeg';
+const fileBuffer = getFileUpload(filename, 'images');
 
 export const postUploadEvidence = async (
     request: APIRequestContext,
@@ -10,12 +12,13 @@ export const postUploadEvidence = async (
     const poiId = Number(infoPoi);
     const type = 'respondent';
 
-    const filePath = path.join(__dirname, '../../../localStorage/background diponogoro.jpeg');
-    const fileBuffer = fs.readFileSync(filePath);
+    if (!fileBuffer) {
+        throw new Error(`File ${filename} could not be found or read.`);
+    }
 
     const formData = {
         photo: {
-            name: path.basename(filePath),
+            name: filename,
             mimeType: 'image/jpeg',
             buffer: fileBuffer
         },
@@ -29,6 +32,5 @@ export const postUploadEvidence = async (
         },
         multipart: formData
     });
-
     return response;
 };

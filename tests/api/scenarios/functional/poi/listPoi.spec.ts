@@ -1,8 +1,8 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getListPoi, getListPoiWithInvalidToken, getListPoiWithoutToken, getListPoiNotValid } from '../../../endpoints/poi/getListPoi';
-import { getStorage, saveStorage } from '../../../../helpers/parsingData';
-import { ECOSYSTEM_DATA, expectedColors, expectedStatus, expectedOpportunities } from '../../../../helpers/constants';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
+import { ECOSYSTEM_DATA, expectedColors, expectedStatus, expectedOpportunities } from '../../../../../helpers/constants';
 
 test.describe('API GET List POI', () => {
 

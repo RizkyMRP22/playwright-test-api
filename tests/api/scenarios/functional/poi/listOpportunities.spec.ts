@@ -1,8 +1,8 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getOpportunity, getOpportunityInvalidToken, getOpportunityWithoutToken } from '../../../endpoints/poi/getOpportunity';
-import { getStorage,saveStorage } from '../../../../helpers/parsingData';
-import { expectedOpportunities } from '../../../../helpers/constants';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
+import { expectedOpportunities } from '../../../../../helpers/constants';
 
 
 test.describe('API GET List Opportunities', () => {

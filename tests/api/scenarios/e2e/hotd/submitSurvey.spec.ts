@@ -5,7 +5,7 @@ import { postAssignPoiHOTD } from '../../../endpoints/poi/postAssignPoi';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 import { postSubmitSurveyPoi } from '../../../endpoints/poi/postSubmitSurvey';
 import { postUploadEvidence } from '../../../endpoints/poi/postUploadEvidence';
-import { getStorage, saveStorage } from '../../../../helpers/parsingData';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

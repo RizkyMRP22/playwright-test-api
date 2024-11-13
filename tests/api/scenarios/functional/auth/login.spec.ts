@@ -1,7 +1,7 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { generateToken } from '../../../endpoints/auth/postGenerateToken';
 import { login, loginWithInvalidToken, loginWithInvalidCredentials,loginWithInvalidCredentials2 } from '../../../endpoints/auth/postLogin';
-import { getStorage, saveStorage } from '../../../../helpers/parsingData';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
 
 test.describe('API POST Login', () => {
     test.beforeAll('Positive Case: [200] Generate Token', async ({ request }: { request: APIRequestContext }) => {

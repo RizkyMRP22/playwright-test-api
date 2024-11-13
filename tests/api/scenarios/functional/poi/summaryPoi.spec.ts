@@ -1,9 +1,7 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getSummaryPoi, getSummaryPoiWithInvalidToken,getSummaryPoiWithoutToken } from '../../../endpoints/poi/getSummaryPoi';
-import { getStorage,saveStorage } from '../../../../helpers/parsingData';
-import { schemas } from '../../../schemas/poi/summaryPoi.schema';
-import { validateResponseSchema } from '../../../../helpers/validateSchemas';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
 
 test.describe('API GET Summary POI', () => {
     

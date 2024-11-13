@@ -2,7 +2,7 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getListSurvey, getListSurveyNotValid, getListSurveyWithInvalidToken, getListSurveyWithoutToken } from '../../../endpoints/approval/getListSurvey';
 import { getSector, getSectorInvalidToken, getSectorWithoutToken } from '../../../endpoints/poi/getSector';
-import { getStorage, saveStorage } from '../../../../helpers/parsingData';
+import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
 
 test.describe('API GET List Hasil Survey By MGR Witel', () => {
     let loginToken;
