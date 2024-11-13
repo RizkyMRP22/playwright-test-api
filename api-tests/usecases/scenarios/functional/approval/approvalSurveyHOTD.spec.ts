@@ -5,12 +5,8 @@ import { getListSurvey } from '../../../endpoints/approval/getListSurvey';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 
 
-test.describe('API POST Approval Hasil Survey POI By HOTD',{
-    annotation: {
-      type: 'task',
-      description: 'https://telkomdds.atlassian.net/browse/MSMA-3351',
-    },
-  }, () => {
+test.describe('API POST Approval Hasil Survey POI By HOTD', () => {
+    test.setTimeout(60000);
     let loginToken;
     let poiId;
     let email;
@@ -32,52 +28,50 @@ test.describe('API POST Approval Hasil Survey POI By HOTD',{
         console.log(`Login as ${nikUsers}`);
     });
 
-    // test.beforeEach('Get List Hasil Survey POI By HOTD', async ({ request }) => {
-    //     const payload = {
-    //         page:1,
-    //         size:10,
-    //         sortBy: "createdDate",
-    //     }
-    //     const response = await getListSurvey(request, loginToken, payload);
-    //     const responseData = await response.json();
 
-    //     expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
-    //     expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
-    //     expect.soft(responseData.message, 'Expected message is "Success"').toBe("success");
+    test(`[Positive Case:[200] Approval Hasil Survey POI By HOTD`, async ({ request }: { request: APIRequestContext }) => {
 
-    //     responseData.data.forEach((data: { poiId:any, validBy:any, status: {label: any} }) => {
-    //         const status = 'Proses Approval - Valid Internal'
-    //         const validBy = 'HOTD'
-    //         expect.soft(data.status[0].label, `Expected Status to match ${status}}`).toBe(status);
-    //         expect.soft(data.validBy, `Expected validBy to match ${validBy}}`).toBe(validBy);
-    //     });
-    //     poiId = responseData.data[1].poiId;
-    // });
+        await test.step('Get List Survey', async () => {
+            const payload = {
+                page: 1,
+                size: 10,
+                sortBy: "createdDate",
+            }
+            const response = await getListSurvey(request, loginToken, payload);
+            const responseData = await response.json();
 
-    // test.beforeEach('Get POI Detail', async ({ request }) => {
-    //     const response = await getPoiDetail(request, loginToken, poiId);
-    //     const responseData = await response.json();
-    
-    //     expect(response.ok(), 'Expected response API is valid').toBeTruthy();
-    //     expect(responseData.code, 'Expected response code is 200').toBe(200);
-    //     expect(responseData.data.idPoi, 'Expected POI ID Match with request').toBe(poiId);
-    //     expect(responseData.message, 'Expected message is "success"').toBe("success");
+            expect.soft(responseData.code, 'Expected response code to be 200').toBe(200);
 
-    //     respondentId = responseData.data.respondentId;
-    // });
+            responseData.data.forEach((data: { validBy: any, status: { label: any }, id: any }) => {
+                const status = 'Proses Approval - Valid Internal'
+                const validBy = 'HOTD'
+                expect.soft(data.status[0].label, `Expected Status to match ${status}}`).toBe(status);
+                expect.soft(data.validBy, `Expected validBy to match ${validBy}}`).toBe(validBy);
+            });
+            poiId = responseData.data[2].idPoi;
+            console.log(poiId)
+        });
 
+        await test.step('Get POI Detail', async () => {
+            console.log(poiId)
+            const response = await getPoiDetail(request, loginToken, poiId);
+            const responseData = await response.json();
+            expect.soft(responseData.code, 'Expected response code to be 200').toBe(200);
+            respondentId = responseData.data.respondentId;
+        });
 
-    // test(`[Positive Case:[200] Approval Hasil Survey POI By HOTD`, async ({ request } : { request: APIRequestContext }) => {
-    //     const payload = {
-    //         action: "valid",
-    //         email: email,
-    //         id: respondentId,
-    //     };
-    //     const responseAssign = await postApprovalMGR(request, loginToken, payload);
-    //     const responseDataAssign = await responseAssign.json();
+        await test.step('Approve Hasil Survey POI By HOTD', async () => {
+            const payload = {
+                action: "valid",
+                email: email,
+                id: respondentId,
+            };
+            const response = await postApprovalMGR(request, loginToken, payload);
+            const responseData = await response.json();
 
-    //     expect.soft(responseDataAssign.message, `Expected POI "${poiId}" to be successfully Approve`).toBe("berhasil mengirim data");
-    // });
+            expect.soft(responseData.message, `Expected POI "${poiId}" to be successfully Approve`).toBe("berhasil mengirim data");
+        });
+    });
 
     test('Negative Case: [401] Get POI Detail with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
         const payload = {
@@ -85,7 +79,7 @@ test.describe('API POST Approval Hasil Survey POI By HOTD',{
             email: email,
             id: respondentId,
         };
-        const response = await postApprovalMGRWithInvalidToken(request,payload);
+        const response = await postApprovalMGRWithInvalidToken(request, payload);
         const responseData = await response.json();
 
         expect.soft(response.status(), 'Expected status code is 401').toBe(401);
