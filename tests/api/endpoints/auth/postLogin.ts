@@ -33,11 +33,11 @@ export const loginWithInvalidToken = async (request: APIRequestContext): Promise
 };
 
 // Negative case: Login with Invalid Username/Password
-export const loginWithInvalidCredentials = async (request: APIRequestContext, tokenGenerate: string): Promise<APIResponse> => {
+export const loginWithInvalidCredentials = async (request: APIRequestContext): Promise<APIResponse> => {
     const response = await request.post('/users-management/v3/auth/login', {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenGenerate}`
+            'Authorization': `Bearer ${process.env.TOKEN}`
         },
         data: {
             username: process.env.NIK,
@@ -48,11 +48,11 @@ export const loginWithInvalidCredentials = async (request: APIRequestContext, to
 };
 
 // Negative case: Login with Invalid Username/Password
-export const loginWithInvalidCredentials2 = async (request: APIRequestContext, tokenGenerate: string): Promise<APIResponse> => {
+export const loginWithInvalidCredentials2 = async (request: APIRequestContext): Promise<APIResponse> => {
     const response = await request.post('/users-management/v3/auth/login', {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenGenerate}`
+            'Authorization': `Bearer ${process.env.TOKEN}`
         },
         data: {
             username: process.env.NIK_OTHERS,
