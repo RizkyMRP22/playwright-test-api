@@ -4,7 +4,7 @@ import { postApprovalMGR } from '../../../endpoints/approval/postApprovalSurveyH
 import { getListSurvey } from '../../../endpoints/approval/getListSurvey';
 import { getPoiDetail } from '../../../endpoints/poi/getPoiDetail';
 
-test.describe('API POST Approval Hasil Survey POI By HOTD', () => {
+test.describe.skip('API POST Approval Hasil Survey POI By HOTD', () => {
 
 
     test('Positive Case: [200] Approval Hasil Survey POI By HOTD', async ({ request }: { request: APIRequestContext }) => {

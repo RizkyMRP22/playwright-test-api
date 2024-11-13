@@ -26,7 +26,7 @@ test.describe.serial('[E2E] Profiling POI By HOTD', () => {
 
         loginToken = responseData.data.accessToken;
         email = responseData.data.email;
-        saveStorage("loginToken", loginToken);
+        // saveStorage("loginToken", loginToken);
     });
 
     test('Get List POI with Data Mentah', async ({ request }) => {
@@ -50,13 +50,15 @@ test.describe.serial('[E2E] Profiling POI By HOTD', () => {
     });
 
     test('Assignment POI', async ({ request }) => {
-        const poiDetail = JSON.parse(getStorage("poiDetail-e2e"));
+        // const poiDetail = JSON.parse(getStorage("poiDetail-e2e"));
         const payload = {
             poiId,
             emailUserAgent: email,
             assignTo: "HOTD",
             assignmentType: "validasi"
         };
+
+        console.log(payload)
         const responseAssign = await postAssignPoiHOTD(request, loginToken, payload);
         const responseDataAssign = await responseAssign.json();
 

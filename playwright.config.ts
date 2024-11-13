@@ -22,7 +22,7 @@ if (!configData) {
 }
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: './tests/api/suites',
   globalSetup: require.resolve(configData), // Provide the path as a string
   /* Run tests in files in parallel */
   fullyParallel: true,

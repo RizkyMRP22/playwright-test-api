@@ -42,11 +42,11 @@ test.describe('API POST Approval Hasil Survey POI By HOTD', () => {
         const responseData = await response.json();
 
         expect.soft(responseData.code, 'Expected response code to be 200').toBe(200);
-        poiId = responseData.data[2].idPoi;
+        poiId = responseData.data[0].idPoi;
         const status = 'Proses Approval - Valid Internal';
         const validBy = 'HOTD';
-        expect.soft(responseData.data[2].status[0].label, `Expected poi ${poiId} Status to match ${status}`).toBe(status);
-        expect.soft(responseData.data[2].validBy, `Expected validBy to match ${validBy}`).toBe(validBy);
+        expect.soft(responseData.data[0].status[0].label, `Expected poi ${poiId} Status to match ${status}`).toBe(status);
+        expect.soft(responseData.data[0].validBy, `Expected validBy to match ${validBy}`).toBe(validBy);
     }
 
     async function getPoiDetailStep(request: APIRequestContext) {
