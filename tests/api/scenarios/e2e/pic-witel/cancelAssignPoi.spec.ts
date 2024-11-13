@@ -7,15 +7,15 @@ import { getListSalesAgent } from '../../../endpoints/sales-agent/getListSalesAg
 import { postAssignPoiWitel } from '../../../endpoints/sales-agent/postAssignPoi';
 
 test.describe.serial('[E2E] Cancel Assign POI from PIC Witel', () => {
-    let loginToken;
-    let poiId;
-    let idUserAgent;
-    let emailAgent;
-    let nikUsers;
+    let loginToken: string;
+    let poiId: string;
+    let idUserAgent: string;
+    let emailAgent: string;
+    let nikUsers: string;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const nik = '990088dummy'
-        const response = await login(request,nik);
+        const nik = '990088dummy';
+        const response = await login(request, nik);
         const responseData = await response.json();
 
         expect.soft(response.ok(), 'Expected API response to be valid').toBeTruthy();
@@ -46,38 +46,34 @@ test.describe.serial('[E2E] Cancel Assign POI from PIC Witel', () => {
 
         poiId = responseDataList.data[0].idPoi;
     });
-    
-    test(`Assignment POI by Witel to SA/AR`, async ({ request } : { request: APIRequestContext }) => {
-        await test.step('Get List Sales Agent', async () => {
-            const responseList = await getListSalesAgent(request, loginToken);
-            const responseDataList = await responseList.json();
-            expect.soft(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
-    
-            idUserAgent = responseDataList.data[0].id;
-            emailAgent = responseDataList.data[0].email;
-        });
-        
-        await test.step(`Assignment POI ${poiId} to ${emailAgent}`, async () => {
-            const payload = {
-                poiId,
-                emailUserAgent: emailAgent,
-                idUserAgent: idUserAgent,
-                assignmentType: "validasi"
-            };
-            const responseAssign = await postAssignPoiWitel(request, loginToken, payload);
-            const responseDataAssign = await responseAssign.json();
-    
-            expect.soft(responseDataAssign.message, `Expected POI "${poiId}" to be successfully assigned to ${emailAgent}`).toBe("POI berhasil diassign");
-        });
+
+    test('Assignment POI by Witel to SA/AR', async ({ request }: { request: APIRequestContext }) => {
+        const responseList = await getListSalesAgent(request, loginToken);
+        const responseDataList = await responseList.json();
+        expect.soft(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
+
+        idUserAgent = responseDataList.data[0].id;
+        emailAgent = responseDataList.data[0].email;
+
+        const payload = {
+            poiId,
+            emailUserAgent: emailAgent,
+            idUserAgent: idUserAgent,
+            assignmentType: "validasi"
+        };
+        const responseAssign = await postAssignPoiWitel(request, loginToken, payload);
+        const responseDataAssign = await responseAssign.json();
+
+        expect.soft(responseDataAssign.message, `Expected POI "${poiId}" to be successfully assigned to ${emailAgent}`).toBe("POI berhasil diassign");
     });
-    
-    test(`Cancel Assignment POI`, async ({ request }: { request: APIRequestContext }) => {
-        const responseCancel = await postCancelAssignPoi(request, loginToken ,poiId);
+
+    test('Cancel Assignment POI', async ({ request }: { request: APIRequestContext }) => {
+        const responseCancel = await postCancelAssignPoi(request, loginToken, poiId);
         const responseDataCancel = await responseCancel.json();
         expect.soft(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil di cancel");
     });
 
-    test(`Validate Poi detail has status Data Mentah`, async ({ request }: { request: APIRequestContext }) => {
+    test('Validate Poi detail has status Data Mentah', async ({ request }: { request: APIRequestContext }) => {
         const responsePoiDetail2 = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail2 = await responsePoiDetail2.json();
         expect(responseDataPoiDetail2.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);

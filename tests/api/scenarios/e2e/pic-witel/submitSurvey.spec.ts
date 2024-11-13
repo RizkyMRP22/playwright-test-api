@@ -12,7 +12,7 @@ test.describe.serial('[E2E] Assign POI from PIC Witel to SA/AR', () => {
     let nikUsers;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const nik = '990088dummy'
+        const nik = '990088dummy';
         const response = await login(request, nik);
         const responseData = await response.json();
 
@@ -25,33 +25,34 @@ test.describe.serial('[E2E] Assign POI from PIC Witel to SA/AR', () => {
         console.log(`Login as ${nikUsers}`);
     });
 
-    test('Get List POI with Data Mentah', async ({ request }) => {
+    test('Get List POI with Data Mentah and Sales Agent', async ({ request }) => {
         const params = {
             size: 1,
             page: 10,
             sort: 'desc',
             status: 'dataMentah'
         };
-        const responseList = await getListPoi(request, loginToken, params);
-        const responseDataList = await responseList.json();
 
-        expect.soft(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
+        // Parallelize API calls
+        const [responseListPoi, responseListSalesAgent] = await Promise.all([
+            getListPoi(request, loginToken, params),
+            getListSalesAgent(request, loginToken)
+        ]);
 
-        responseDataList.data.forEach(poi => {
+        const responseDataListPoi = await responseListPoi.json();
+        const responseDataListSalesAgent = await responseListSalesAgent.json();
+
+        expect.soft(responseDataListPoi.message, `Expected success message when retrieving POI`).toBe("success");
+        expect.soft(responseDataListSalesAgent.message, `Expected success message when retrieving Sales Agent`).toBe("success");
+
+        responseDataListPoi.data.forEach(poi => {
             const expectedStatus = 'Data Mentah';
             expect.soft(poi.status[0].label, `Expected POI ${poi.idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
         });
 
-        poiId = responseDataList.data[0].idPoi;
-    });
-
-    test('Get List Sales Agent', async ({ request }: { request: APIRequestContext }) => {
-        const responseList = await getListSalesAgent(request, loginToken);
-        const responseDataList = await responseList.json();
-        expect.soft(responseDataList.message, `Expected success message when retrieving POI`).toBe("success");
-
-        idUserAgent = responseDataList.data[0].id;
-        emailAgent = responseDataList.data[0].email;
+        poiId = responseDataListPoi.data[0].idPoi;
+        idUserAgent = responseDataListSalesAgent.data[0].id;
+        emailAgent = responseDataListSalesAgent.data[0].email;
     });
 
     test(`Assignment POI by Witel to SA/AR`, async ({ request }: { request: APIRequestContext }) => {

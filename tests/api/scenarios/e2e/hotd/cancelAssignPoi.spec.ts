@@ -27,12 +27,11 @@ test.describe.serial('[E2E] Cancel Assign POI by HOTD', () => {
 
     test('Get List POI with Data Mentah', async ({ request }) => {
         const params = {
-            size : 1,
-            page : 10,
-            sort : 'desc',
-            status : 'dataMentah'
-        }
-        const loginToken = getStorage("loginToken");
+            size: 1,
+            page: 10,
+            sort: 'desc',
+            status: 'dataMentah'
+        };
         const responseList = await getListPoi(request, loginToken, params);
         const responseDataList = await responseList.json();
 
@@ -40,43 +39,40 @@ test.describe.serial('[E2E] Cancel Assign POI by HOTD', () => {
 
         responseDataList.data.forEach(poi => {
             const expectedStatus = 'Data Mentah';
-            expect.soft(poi.status[0].label, `Expected POI ${responseDataList.data[0].idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
+            expect.soft(poi.status[0].label, `Expected POI ${poi.idPoi} status to be ${expectedStatus}`).toBe(expectedStatus);
         });
 
         poiId = responseDataList.data[0].idPoi;
         saveStorage("poiDetail", JSON.stringify(responseDataList.data[0]));
     });
 
-    const getData = JSON.parse(getStorage("poiDetail-e2e"))
-    let dataPoi = getData.idPoi
-
-    test(`Assignment POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
+    test('Assignment POI', async ({ request }: { request: APIRequestContext }) => {
         const payload = {
             poiId: poiId,
             emailUserAgent: nik,
             assignTo: "HOTD",
             assignmentType: "validasi"
-        }
+        };
 
-        const responseAssign = await postAssignPoiHOTD(request, loginToken ,payload);
+        const responseAssign = await postAssignPoiHOTD(request, loginToken, payload);
         const responseDataAssign = await responseAssign.json();
-        expect.soft(responseDataAssign.message, `Expected message is "${poiId}" POI berhasil diassign"`).toBe("POI berhasil diassign");
+        expect.soft(responseDataAssign.message, `Expected message is "POI berhasil diassign"`).toBe("POI berhasil diassign");
     });
 
-    test(`Validate Poi detail ${dataPoi} has status Proses Survei`, async ({ request }: { request: APIRequestContext }) => {
+    test('Validate POI detail has status Proses Survei', async ({ request }: { request: APIRequestContext }) => {
         const responsePoiDetail = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail = await responsePoiDetail.json();
         expect.soft(responseDataPoiDetail.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);
-        expect.soft(responseDataPoiDetail.data.status[0].label, `Expected Status POI "${poiId}" is "Proses Survey"`).toBe("Proses Survey")
+        expect.soft(responseDataPoiDetail.data.status[0].label, `Expected Status POI "${poiId}" is "Proses Survey"`).toBe("Proses Survey");
     });
 
-    test(`Cancel Assignment POI ${dataPoi}`, async ({ request }: { request: APIRequestContext }) => {
-        const responseCancel = await postCancelAssignPoi(request, loginToken ,poiId);
+    test('Cancel Assignment POI', async ({ request }: { request: APIRequestContext }) => {
+        const responseCancel = await postCancelAssignPoi(request, loginToken, poiId);
         const responseDataCancel = await responseCancel.json();
-        expect.soft(responseDataCancel.message, `Expected message is "${poiId}" POI berhasil di cancel"`).toBe("POI berhasil di cancel");
+        expect.soft(responseDataCancel.message, `Expected message is "POI berhasil di cancel"`).toBe("POI berhasil di cancel");
     });
 
-    test(`Validate Poi detail ${dataPoi} has status Data Mentah`, async ({ request }: { request: APIRequestContext }) => {
+    test('Validate POI detail has status Data Mentah', async ({ request }: { request: APIRequestContext }) => {
         const responsePoiDetail2 = await getPoiDetail(request, loginToken, poiId);
         const responseDataPoiDetail2 = await responsePoiDetail2.json();
         expect.soft(responseDataPoiDetail2.data.idPoi, `Expected POI ID "${poiId}" Match with request`).toBe(poiId);

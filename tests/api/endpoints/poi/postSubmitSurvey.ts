@@ -1,7 +1,7 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 
 interface poiInfo {
-  poiId: number
+  poiId: string
   poiName: string;
   sector: string;
   subSector: string;
@@ -14,9 +14,10 @@ interface poiInfo {
 
 
 export const postSubmitSurveyPoi = async (request: APIRequestContext, loginToken: string, info: poiInfo): Promise<APIResponse> => {
+  const poiId = Number(info.poiId);
   const payload = {
     "identity": {
-      "poiId": info.poiId,
+      "poiId": poiId,
       "poiName": info.poiName,
       "description": "Ini optional ya",
       "phoneNumber": "",
