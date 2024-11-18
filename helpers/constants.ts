@@ -275,3 +275,93 @@ export const expectedOpportunities = [
         ]
     }
 ];
+
+export const ACTION_WORDING = {
+    // approval
+    "approval-new-poi": {
+    title: "Validasi POI yang diajukan oleh Sales",
+    subtTitle: "Periksa pengajuan POI berdasarkan informasi yang ada",
+    button: [
+            "reject-seamless-approval",
+            "seamless-approval"
+        ]
+    },
+    "approval-bundling": {
+    title: "Validasi POI yang diajukan oleh Sales",
+    subtTitle: "Periksa pengajuan POI berdasarkan informasi yang ada",
+    button: [
+            "reject-approval",
+            "bundle-approval"
+        ]
+    },
+    "approval-found": {
+    title: "POI sudah divalidasi oleh Sales",
+    subtTitle: "Periksa hasil tinjauan dan pilih status yang sesuai",
+    button: [
+            "invalid-approval",
+            "valid-approval"
+        ]
+    },
+    "approval-not-found": {
+    title: "Lokasi POI tidak ditemukan oleh Sales",
+    subtTitle: "Periksa hasil tinjauan dan pilih status yang sesuai",
+    button: [
+            "invalid-approval",
+            "valid-approval"
+        ]
+    },
+    "waiting-approval": {
+    title: "Mohon menunggu approval dari BS Witel",
+    subtTitle: "BS Witel sedang melakukan approval terkait POI yang sudah kamu Validasi",
+    button: []
+    },
+    // assignment
+    "assign": {
+    title: "Assign POI ke Sales",
+    subtTitle: "Assign POI untuk dilanjutkan ke tahap survei",
+    button: [
+            "assign-poi"
+        ]
+    },
+    "self-assign": {
+    title: "Assign POI ke diri kamu sendiri",
+    subtTitle: "Assign POI untuk dilanjutkan ke tahap survei",
+    button: [
+            "self-assign-poi"
+        ]
+    },
+    "reassign": {
+    title: "Kamu bisa cancel assign dan re-assign POI",
+    subtTitle: "Jika ada kendala survei oleh Sales",
+    button: [
+            "cancel-assign",
+            "re-assign"
+        ]
+    },
+    "validation-self-assign": {
+    title: "Kamu bisa menyelesaikan validasi dan batal survei POI",
+    subtTitle: "Silakan isi form validasi apakah POI ini ditemukan atau tidak ditemukan, jika ingin membatalkan survei maka akan dikembalikan ke status Data Mentah",
+    button: [
+            "cancel-survey",
+            "survey-found"
+        ]
+    },
+    // negative case
+    "unauthorized": {
+    title: "Kamu tidak dapat melakukan validasi",
+    subtTitle: "POI ini diassign & ditangani oleh"
+    },
+    "unable-approve": {
+    title: "POI ini mengalami anomali data assignment Sales",
+    subtTitle: "Mohon hubungi helpdesk untuk informasi lebih lanjut"
+    },
+    // validation action
+    "validation-action-info": {
+    title: "Validasi POI yang diajukan",
+    subtTitle: "Periksa dan konfirmasi informasi POI yang diajukan",
+    button: [
+            "confirm-validation",
+            "reject-validation"
+        ]
+    }
+};

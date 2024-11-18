@@ -1,7 +1,9 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getPoiDetail, getPoiDetail404,getPoiDetailWithInvalidToken,getPoiDetailWithoutToken } from '../../../endpoints/poi/getPoiDetail';
-import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
+import { getStorage, saveStorage, testActionInfo } from '../../../../../helpers/parsingData';
+import { getListPoi } from '../../../endpoints/poi/getListPoi';
+import { expectedStatus } from '../../../../../helpers/constants';
 
 test.describe('API GET Poi Detail', () => {
     
@@ -26,8 +28,46 @@ test.describe('API GET Poi Detail', () => {
         expect(responseData.code, 'Expected response code is 200').toBe(200);
         expect(responseData.data.idPoi, 'Expected POI ID Match with request').toBe(poiId);
         expect(responseData.message, 'Expected message is "success"').toBe("success");
-
+        const { actionInfo } = responseData.data;
+        testActionInfo(actionInfo);        
     });
+
+    test('Positive Case:[200] Verify action button Get POI Detail is valid', async ({ request }: { request: APIRequestContext }) => {
+        const loginToken = getStorage('loginToken');
+      
+        for (const status of expectedStatus) {
+          await test.step(`Verify POI for status: ${status.key}`, async () => {
+            const params = {
+              page: 1,
+              size: 10,
+              sort: 'desc',
+              status: status.key,
+            };
+      
+            // Fetch POI list
+            const responseList = await getListPoi(request, loginToken, params);
+            const responseListData = await responseList.json();
+      
+            // Ensure at least one POI exists for the given status
+            const dataPoi = responseListData.data[0]?.idPoi;
+            if (!dataPoi) {
+              throw new Error(`No POI found for status: ${status.key}`);
+            }
+      
+            // Fetch POI details
+            const response = await getPoiDetail(request, loginToken, dataPoi);
+            const responseData = await response.json();
+      
+            // Assertions
+            expect.soft(responseData.data.idPoi, `Expected POI ${dataPoi} to match the status ${params.status}`).toBe(dataPoi);
+      
+            const { actionInfo } = responseData.data;
+      
+            // Test actionInfo, handling empty action appropriately
+            testActionInfo(actionInfo);
+          });
+        }
+      });      
 
     test('Negative Case: [401] Get POI Detail with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
         const response = await getPoiDetailWithInvalidToken(request,"111");
