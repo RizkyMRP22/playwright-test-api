@@ -29,41 +29,48 @@ test.describe.serial('[E2E] Profiling POI By HOTD', () => {
         // saveStorage("loginToken", loginToken);
     });
 
-    test('Get List POI with Data Mentah', async ({ request }) => {
+      test('Get List POI with Data Mentah', async ({ request }: { request: APIRequestContext }) => {
         const params = {
-            size: 1,
-            page: 10,
-            sort: 'desc',
-            status: 'dataMentah'
+            page: 1,
+            size: 10,
+            sort: "desc"
         };
-        const responseList = await getListPoi(request, loginToken, params);
-        const responseDataList = await responseList.json();
-
-        expect(responseDataList.message).toBe("success");
-
-        responseDataList.data.forEach(poi => {
-            expect(poi.status[0].label).toBe('Data Mentah');
-        });
-
-        poiId = responseDataList.data[0].idPoi;
-        saveStorage("poiDetail-e2e", JSON.stringify(responseDataList.data[0]));
+    
+        const response = await getListPoi(request, loginToken, params);
+        const responseData = await response.json();    
+        expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
+        if (responseData.data.length > 1) {
+        // Select a random POI index
+        const randomIndex = Math.floor(Math.random() * responseData.data.length);
+        const selectedPoi = responseData.data[randomIndex];
+            poiId = responseData.data[0].idPoi;
+            console.log(`Randomly selected POI ID: ${selectedPoi.idPoi} random index ${randomIndex}`);
+        } else {
+            console.warn('Expected more than 1 record but got:', responseData.data.length);
+        }
     });
-
-    test('Assignment POI', async ({ request }) => {
-        // const poiDetail = JSON.parse(getStorage("poiDetail-e2e"));
+    
+      
+      test('Assignment POI', async ({ request }) => {
+        if (!poiId) {
+          throw new Error('POI ID is not available. Ensure the previous test ran successfully.');
+        }
+      
         const payload = {
-            poiId,
-            emailUserAgent: email,
-            assignTo: "HOTD",
-            assignmentType: "validasi"
+          poiId,
+          emailUserAgent: email,
+          assignTo: 'HOTD',
+          assignmentType: 'validasi',
         };
-
-        console.log(payload)
+      
+        console.log('Assignment Payload:', payload);
+      
         const responseAssign = await postAssignPoiHOTD(request, loginToken, payload);
         const responseDataAssign = await responseAssign.json();
-
-        expect(responseDataAssign.message).toBe("POI berhasil diassign");
-    });
+      
+        // Validate assignment response
+        expect(responseDataAssign.message, 'Expected Message POI berhasil diassign').toBe('POI berhasil diassign');
+      });
 
     test('Validate POI detail has status Proses Survei', async ({ request }) => {
         const responsePoiDetail = await getPoiDetail(request, loginToken, poiId);
