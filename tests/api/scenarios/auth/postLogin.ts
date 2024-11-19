@@ -2,8 +2,8 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 import { login, loginWithInvalidToken, loginWithInvalidCredentials,loginWithInvalidCredentials2 } from '../../endpoints/auth/postLogin';
 import { getStorage, saveStorage } from '../../../../helpers/parsingData';
 
-export async function postLogin (request: APIRequestContext) {
-    const response = await login(request);
+export async function postLogin (request: APIRequestContext, nik?:string) {
+    const response = await login(request, nik);
     const responseData = await response.json();
     expect(response.ok(), 'Expected response API is valid').toBeTruthy();
     expect(responseData.code, 'Expected response code is 200').toBe(200);
