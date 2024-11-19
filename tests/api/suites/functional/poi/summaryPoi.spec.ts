@@ -2,6 +2,7 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
 import { getSummaryPoi, getSummaryPoiWithInvalidToken,getSummaryPoiWithoutToken } from '../../../endpoints/poi/getSummaryPoi';
 import { getStorage, saveStorage } from '../../../../../helpers/parsingData';
+import { postLogin } from '../../../scenarios/auth/postLogin';
 
 test.describe('API GET Summary POI', () => {
     
@@ -17,7 +18,9 @@ test.describe('API GET Summary POI', () => {
     });
 
     test('Positive Case:[200] Get Summary POI', async ({ request }: { request: APIRequestContext }) => {
-        const loginToken = getStorage("loginToken");
+        // const loginToken = getStorage("loginToken");
+        const login = await postLogin(request);
+        const loginToken = login.data.accessToken;
         const response = await getSummaryPoi(request, loginToken);
         const responseData = await response.json();
     
@@ -49,6 +52,7 @@ test.describe('API GET Summary POI', () => {
         console.info("unexpectedKeys: ",unexpectedKeys)
         expect(missingKeys.length,'Expected no have missing keys').toBe(0);
         expect(unexpectedKeys.length, 'Expected no have unexpected keys').toBe(0);
+        saveStorage("summaryPoi", JSON.stringify(responseData.data, null, 2));
     });
 
     test('Negative Case: [401] Get Summary POI with Invalid Token', async ({ request }: { request: APIRequestContext }) => {
