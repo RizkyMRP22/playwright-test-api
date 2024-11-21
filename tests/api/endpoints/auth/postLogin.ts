@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Function to login with valid credentials
-export const login = async (request: APIRequestContext, nik?:string): Promise<APIResponse> => {
+export const login = async (request: APIRequestContext, nik?:string, password?:string): Promise<APIResponse> => {
     const response = await request.post('/users-management/v3/auth/login', {
         headers: {
             'Content-Type': 'application/json',
@@ -11,7 +11,7 @@ export const login = async (request: APIRequestContext, nik?:string): Promise<AP
         },
         data: {
             username: nik ?? process.env.NIK,
-            password: process.env.PASSWORD
+            password: password ?? process.env.PASSWORD
         }
     });
     return response;

@@ -101,5 +101,76 @@ export const testActionInfo = (actionInfo: any) => {
       throw new Error('action is undefined or null in actionInfo');
     }
   };
+
+
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
   
+/**
+ * Search for an object by its ID in the list of data.
+ * @param dataList - The array of data objects.
+ * @param id - The ID to search for.
+ * @returns The object with the matching ID or null if not found.
+ */
+export function searchById(dataList: any[], id: any): any | null {
+  return dataList.find((item) => Number(item.id) === id) || null;
+}
+
+export async function compareMenuFields(responseMenuUser: any, responseMenuBO: any) {
+  const userMenuData = responseMenuUser.data;
+  const boMenuData = responseMenuBO.data;
+
+  const mismatchedEntries: any[] = [];
   
+  // Compare each menu item from User Management with BO menu
+  userMenuData.forEach((userMenuItem: any) => {
+      const matchedBOItem = boMenuData.find((boMenuItem: any) => boMenuItem.key === userMenuItem.key);
+
+      if (!matchedBOItem) {
+          mismatchedEntries.push({
+              key: userMenuItem.key,
+              status: 'Missing in BO Menu',
+              userMenuItem,
+          });
+          return;
+      }
+
+      // Compare specific fields
+      const fields = ['group', 'label', 'target'];
+      const fieldMismatches = fields.filter((field) => userMenuItem[field] !== matchedBOItem[field]);
+
+      if (fieldMismatches.length > 0) {
+          mismatchedEntries.push({
+              key: userMenuItem.key,
+              status: 'Field Mismatch',
+              mismatchedFields: fieldMismatches.reduce((acc, field) => {
+                  acc[field] = {
+                      valueInUserMgt: userMenuItem[field],
+                      valueInBO: matchedBOItem[field],
+                  };
+                  return acc;
+              }, {}),
+          });
+      }
+  });
+
+  // Check for items in BO Menu that are missing from User Management Menu
+  boMenuData.forEach((boMenuItem: any) => {
+      const matchedUserItem = userMenuData.find((userMenuItem: any) => userMenuItem.key === boMenuItem.key);
+      if (!matchedUserItem) {
+          mismatchedEntries.push({
+              key: boMenuItem.key,
+              status: 'Missing in User Management Menu',
+              boMenuItem,
+          });
+      }
+  });
+
+  if (mismatchedEntries.length === 0) {
+      console.log('All menu items match perfectly!');
+  } else {
+      console.log('Mismatched Menu Items:', JSON.stringify(mismatchedEntries, null, 2));
+  }
+
+  return mismatchedEntries;
+}
