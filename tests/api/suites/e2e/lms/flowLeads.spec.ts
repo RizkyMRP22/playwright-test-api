@@ -1,10 +1,11 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
-import { postLead } from '../../../endpoints/lms-external/postSubmitLead';
 import { getLeadDetail } from '../../../endpoints/lms-dashboard/getLeadDetail';
 import { putLeadProgress } from '../../../endpoints/lms-dashboard/putLeadProgress';
 import { getPotentialLead } from '../../../endpoints/lead/getPotentialLead';
-import { postSubmitLead } from '../../../scenarios/lms-external/postSubmitLead'
+import { postSubmitLead } from '../../../scenarios/lms-external/postSubmitLead';
+import dotenv from 'dotenv';
+dotenv.config();
 
 test.describe.serial('[E2E] Create lead from external source and dispatch to MGR Witel', () => {
 
@@ -16,7 +17,7 @@ test.describe.serial('[E2E] Create lead from external source and dispatch to MGR
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const dataUser = {
             nik: process.env.NIK_SDA,
-            password: process.env.PASSWORD_DEFAULT
+            password:process.env.PASSWORD_DEFAULT
         }
         const response = await login(request, dataUser.nik, dataUser.password);
         const responseData = await response.json();
@@ -26,8 +27,9 @@ test.describe.serial('[E2E] Create lead from external source and dispatch to MGR
     });
 
     test('Post LEAD from External Source', async ({ request }: { request: APIRequestContext }) => {
-        const response = await postSubmitLead(request);
+        const response = await postSubmitLead(request)
         leadId = response.data.leadId
+
         console.log("leadId: ", leadId)
     });
 
