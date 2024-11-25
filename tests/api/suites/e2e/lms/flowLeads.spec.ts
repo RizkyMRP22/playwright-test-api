@@ -1,9 +1,10 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { login } from '../../../endpoints/auth/postLogin';
-import { getLeadDetail } from '../../../endpoints/lms-dashboard/getLeadDetail';
 import { putLeadProgress } from '../../../endpoints/lms-dashboard/putLeadProgress';
 import { getPotentialLead } from '../../../endpoints/lead/getPotentialLead';
-import { postSubmitLead } from '../../../scenarios/lms-external/postSubmitLead';
+import { getLeadDetail } from '../../../scenarios/lms/lms-dashboard/getLeadDetail';
+import { postSubmitLead } from '../../../scenarios/lms/lms-external/postSubmitLead';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -34,12 +35,9 @@ test.describe.serial('[E2E] Create lead from external source and dispatch to MGR
     });
 
     test('Get LEAD detail', async ({ request }: { request: APIRequestContext }) => {
-        const response = await getLeadDetail(request, loginToken, leadId);
-        expect.soft(response.ok(), 'Expected response API to be valid').toBeTruthy();
-
-        const responseData = await response.json();
-        leadId = responseData.data.leadId
-        isCompleted = responseData.data.isCompleted
+        const response = await getLeadDetail(request, loginToken, leadId)
+        leadId = response.data.leadId
+        isCompleted = response.data.isCompleted
         console.log("leadId: ", leadId)
         console.log("isCompleted: ", isCompleted)
     });
@@ -58,11 +56,8 @@ test.describe.serial('[E2E] Create lead from external source and dispatch to MGR
 
         test('Get LEAD detail for get MGR Witel data', async ({ request }: { request: APIRequestContext }) => {
             const response = await getLeadDetail(request, loginToken, leadId);
-            expect.soft(response.ok(), 'Expected response API to be valid').toBeTruthy();
-
-            const responseData = await response.json();
-            leadId = responseData.data.leadId
-            managerWitel = responseData.data.managerWitel.nik
+            leadId = response.data.leadId
+            managerWitel = response.data.managerWitel.nik
             console.log("leadId: ", leadId)
             console.log("managerWitel: ", managerWitel)
         });

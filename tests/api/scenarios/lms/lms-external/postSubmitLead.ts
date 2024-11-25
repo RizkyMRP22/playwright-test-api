@@ -1,6 +1,6 @@
 import { APIRequestContext, expect, test } from '@playwright/test';
-import { getDataFaker } from '../../../../helpers/faker';
-import { callAPI } from '../../../../helpers/callApi';
+import { getDataFaker } from '../../../../../helpers/faker';
+import { callAPI } from '../../../../../helpers/callApi';
 import dotenv from 'dotenv';
 dotenv.config(); 
 
