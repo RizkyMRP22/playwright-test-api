@@ -4,6 +4,7 @@ import { postLead } from '../../../endpoints/lms-external/postSubmitLead';
 import { getLeadDetail } from '../../../endpoints/lms-dashboard/getLeadDetail';
 import { putLeadProgress } from '../../../endpoints/lms-dashboard/putLeadProgress';
 import { getPotentialLead } from '../../../endpoints/lead/getPotentialLead';
+import { postSubmitLead } from '../../../scenarios/lms-external/postSubmitLead'
 
 test.describe.serial('[E2E] Create lead from external source and dispatch to MGR Witel', () => {
 
@@ -14,8 +15,8 @@ test.describe.serial('[E2E] Create lead from external source and dispatch to MGR
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const dataUser = {
-            nik: "agentsda@test.com",
-            password: "Digital2023"
+            nik: process.env.NIK_SDA,
+            password: process.env.PASSWORD_DEFAULT
         }
         const response = await login(request, dataUser.nik, dataUser.password);
         const responseData = await response.json();
@@ -25,12 +26,8 @@ test.describe.serial('[E2E] Create lead from external source and dispatch to MGR
     });
 
     test('Post LEAD from External Source', async ({ request }: { request: APIRequestContext }) => {
-        const response = await postLead(request);
-        expect.soft(response.ok(), 'Expected response API to be valid').toBeTruthy();
-
-        const responseData = await response.json();
-        leadId = responseData.data.leadId
-
+        const response = await postSubmitLead(request);
+        leadId = response.data.leadId
         console.log("leadId: ", leadId)
     });
 
@@ -71,7 +68,7 @@ test.describe.serial('[E2E] Create lead from external source and dispatch to MGR
         test('Get Potential Lead in MGR Witel MyTens', async ({ request }: { request: APIRequestContext }) => {
             const dataUser = {
                 nik: managerWitel,
-                password: "695849de-9faa-4bc3-9fb3-066034435c59"
+                password: process.env.PASSWORD_DEFAULT
             }
             const loginResponse = await login(request, dataUser.nik, dataUser.password);
             const responseDataLogin = await loginResponse.json();
