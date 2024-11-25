@@ -1,19 +1,15 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import { faker } from '@faker-js/faker';
+import { getDataFaker } from '../../../../helpers/faker'
 
 let ENDPOINT_PATH = '/lead-management/lead/v1/all-source'
 
-const fullName = faker.person.fullName()
-const phoneNumber = `0812-${faker.string.numeric(4)}-${faker.string.numeric(4)}`;
-const email = faker.internet.email()
-const companyName = faker.company.name()
-const externalId = faker.string.numeric(8)
+const extractData = getDataFaker()
 
 const payload = {
     "source": "oca",
-    "externalId": externalId,
-    "fullName": fullName,
-    "phoneNumber": phoneNumber,
+    "externalId": extractData.externalId,
+    "fullName": extractData.fullName,
+    "phoneNumber": extractData.phoneNumber,
     "dialCode": "+62",
     "city": "JAKARTA PUSAT",
     "refferal": {
@@ -23,8 +19,8 @@ const payload = {
         "email": "qatelkom@gmail,com",
         "phoneNumber": "08123123123"
     },
-    "email": email,
-    "companyName": companyName,
+    "email": extractData.email,
+    "companyName": extractData.companyName,
     "companySize": "medium_enterprise",
     "industry": "Edukasi",
     "products": [
@@ -40,7 +36,7 @@ const payload = {
     "discoverySource": "LinkedIn",
     "message": "i need this roduct",
     "userPseudo": {
-        "clientId": externalId,
+        "clientId": extractData.externalId,
         "devicePlatform": "MacOS",
         "utmTerm": "OCA+Coba",
         "trafficSource": "google",
