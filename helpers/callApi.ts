@@ -8,7 +8,7 @@ interface DataAPI {
 
 interface Auth {
     type: 'Bearer' | 'Basic';
-    token:string
+    token?:string
 }
 
 export async function callAPI(
