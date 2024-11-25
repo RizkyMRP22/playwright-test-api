@@ -101,6 +101,8 @@ test.describe.serial('[E2E] Profiling POI By HOTD', () => {
         const expectedUnvalidatedPoi = summaryPoiExisting.unvalidated - 1;
         const expectedAssignedPoi = summaryPoiExisting.assigned + 1;
 
+        console.log(responseData.data)
+
         expect.soft(
             responseData.data.unvalidated.toString(),
             `Expected unvalidated POI count updated, from ${summaryPoiExisting.unvalidated} to ${expectedUnvalidatedPoi}`
@@ -185,6 +187,7 @@ test.describe.serial('[E2E] Profiling POI By HOTD', () => {
         const response = await getSummaryPoi(request, loginToken);
         expect.soft(response.ok(), 'Expected response API to be valid').toBeTruthy();
         const responseData = await response.json();
+        console.log(responseData)
         const summaryPoiExisting = summaryPoi;
         const expectedAssignedPoi = summaryPoiExisting.assigned;
         const expectedapprovalProcessValidInternal = summaryPoiExisting.approvalProcessValidInternal + 1;
@@ -200,7 +203,7 @@ test.describe.serial('[E2E] Profiling POI By HOTD', () => {
         ).toBe(expectedapprovalProcessValidInternal.toString());
     });
 
-    test.fail('[FIX] Validate POI with Valid Internal status show in MGR Witel', async ({ request }) => {
+    test('[FIX] Validate POI with Valid Internal status show in MGR Witel', async ({ request }) => {
         const nik = '850162dummy';
         const responseLogin = await login(request, nik);
         const responseData = await responseLogin.json();
@@ -216,12 +219,12 @@ test.describe.serial('[E2E] Profiling POI By HOTD', () => {
         const responseDataListSurvey = await response.json();
 
         const isIdPoiPresent = responseDataListSurvey.data.some((poi:any) => poi.idPoi === poiId);
+        console.log(isIdPoiPresent)
         expect.soft(isIdPoiPresent,`Expect POI id ${poiId} has show in approval survey list`).toBe(true)
 
     });
 
     test('Approval Survey by MGR Witel', async ({ request }) => {
-
         const payload = {
             action: "valid",
             email: email,

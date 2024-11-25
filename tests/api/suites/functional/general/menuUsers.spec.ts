@@ -12,7 +12,7 @@ test.describe(`[${process.env.ENV}] Compare Menu from API User Management and BO
     const dataUsers = data.dataUsers
 
     for (const data of dataUsers) {
-        test.skip(`Compare Menu ${data.role}`, async ({ request }: { request: APIRequestContext }) => {
+        test(`Compare Menu ${data.role}`, async ({ request }: { request: APIRequestContext }) => {
             const nik = data.nik;
             const logins = await login(request, nik, data.password);
             const responseLogin = await logins.json();
