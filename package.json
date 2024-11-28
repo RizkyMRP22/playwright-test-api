@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npx playwright test tests/api/suites",
     "e2e": "npx playwright test tests/api/suites/e2e",
+    "e2e-submit": "npx playwright test tests/api/suites/e2e/hotd/submitSurvey.spec.ts",
     "functional": "npx playwright test tests/api/suites/functional",
     "report": "npx playwright show-report"
   },
