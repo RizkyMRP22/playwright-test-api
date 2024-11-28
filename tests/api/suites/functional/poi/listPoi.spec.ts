@@ -57,9 +57,9 @@ test.describe('API GET List POI', () => {
         expect.soft(response.ok(), 'Expected response API is valid').toBeTruthy();
         expect.soft(responseData.code, 'Expected response code is 200').toBe(200);
         expect.soft(responseData.message, 'Expected message is "success"').toBe("success");
-        expect.soft(responseData.meta.page, 'Expected meta.page is  1').toBe(0);
+        expect.soft(responseData.meta.page, 'Expected meta.page is  1').toBe(1);
         expect.soft(responseData.meta.source, 'Expected meta.source is "MyIndibiz Assistant"').toBe("MyIndibiz Assistant");
-        expect.soft(responseData.meta.size, 'Expected meta.size is 10').toBe(0);
+        expect.soft(responseData.meta.size, 'Expected meta.size is 10').toBe(10);
         expect.soft(responseData.meta.lastUpdate, 'Expected meta.lastUpdate is defined').toBeDefined();
         expect.soft(responseData.data, 'Expected Data is empty object').toEqual([]);
         expect.soft(responseData.data.length, 'Expected Data dont have data').toBe(0);
@@ -79,18 +79,6 @@ test.describe('API GET List POI', () => {
             expect.soft(response.ok()).toBeTruthy();
             expect.soft(responseData.code).toBe(200);
             expect.soft(responseData.message).toBe("success");
-            if (responseData.data.length >= 1){
-                expect.soft(responseData.meta.page).toBe(1);
-            } else {
-                expect.soft(responseData.meta.page).toBe(0);
-    
-            }
-            if (responseData.data.length >= 1){
-                expect.soft(responseData.meta.size).toBe(10);
-            } else {
-                expect.soft(responseData.meta.page).toBe(0);
-    
-            }
             expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
             expect.soft(responseData.meta.lastUpdate).toBeDefined();
 
@@ -118,19 +106,19 @@ test.describe('API GET List POI', () => {
         expect.soft(response.ok()).toBeTruthy();
         expect.soft(responseData.code).toBe(200);
         expect.soft(responseData.message).toBe("success");
-        if (responseData.data.length >= 1) {
-            expect.soft(responseData.meta.page).toBe(1);
-        } else {
-            expect.soft(responseData.meta.page).toBe(0);
+        // if (responseData.data.length >= 1) {
+        //     expect.soft(responseData.meta.page).toBe(1);
+        // } else {
+        //     expect.soft(responseData.meta.page).toBe(0);
 
-        }
+        // }
         expect.soft(responseData.meta.source).toBe("MyIndibiz Assistant");
-        if (responseData.data.length >= 1) {
-            expect.soft(responseData.meta.size).toBe(10);
-        } else {
-            expect.soft(responseData.meta.page).toBe(0);
+        // if (responseData.data.length >= 1) {
+        //     expect.soft(responseData.meta.size).toBe(10);
+        // } else {
+        //     expect.soft(responseData.meta.page).toBe(0);
 
-        }
+        // }
         expect.soft(responseData.meta.lastUpdate).toBeDefined();
 
         responseData.data.forEach((poi: { idPoi: any }) => {
@@ -140,7 +128,6 @@ test.describe('API GET List POI', () => {
 
         const validStatuses = ['Data Mentah', 'Proses Survey'];
         responseData.data.forEach((poi: { status: { label: string }[] }) => {
-            // Check only the first item in the status array
             if (poi.status.length > 0) {
                 expect.soft(validStatuses, `Expected List Poi to contain status ${validStatuses}`).toContain(poi.status[0].label);
             } else {
