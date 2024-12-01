@@ -1,11 +1,15 @@
-import { faker } from '@faker-js/faker';
+import { Faker, id_ID } from '@faker-js/faker';
+
+const faker = new Faker({ locale: id_ID });
 
 export function getDataFaker() {
     return {
-        fullName : faker.person.fullName(),
-        phoneNumber : `0812-${faker.string.numeric(4)}-${faker.string.numeric(4)}`,
-        email : faker.internet.email(),
-        companyName : faker.company.name(),
-        externalId : faker.string.numeric(8)
-    }
+        fullName: faker.person.fullName(),
+        phoneNumber: `081${faker.string.numeric(1)}-${faker.string.numeric(4)}-${faker.string.numeric(4)}`,
+        email: faker.internet.email(), 
+        companyName: faker.company.name(),
+        externalId: faker.string.numeric(8),
+        poiName: `[MyTens] ${faker.company.name()}`
+    };
 }
+ 
