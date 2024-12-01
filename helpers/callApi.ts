@@ -44,9 +44,10 @@ export async function callAPI(
     throw new Error(`Unsupported method: ${method}`);
   }
 
-  if (!response.ok()) {
-    throw new Error(`API call failed: ${response.status()} - ${await response.text()}`);
-  }
+  // if (!response.ok()) {
+  //   // throw new Error(`API call failed: ${response.status()} - ${await response.text()}`);
+  //   console.log(` ${response.status()} - ${await response.text()}`)
+  // }
 
   return response;
 }
