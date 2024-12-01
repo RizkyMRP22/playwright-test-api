@@ -365,3 +365,20 @@ export const ACTION_WORDING = {
         ]
     }
 };
+
+
+class Constants {
+    static expectedLabelStatus = [
+        'totalPoi',
+        'unvalidated',
+        'assigned',
+        'approvalProcess',
+        'approvalProcessSubmitted',
+        'approvalProcessValidMitra',
+        'approvalProcessValidInternal',
+        'valid',
+        'invalid',
+        'notFound'
+    ];
+}
+export default Constants;
