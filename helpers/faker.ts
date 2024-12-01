@@ -9,7 +9,8 @@ export function getDataFaker() {
         email: faker.internet.email(), 
         companyName: faker.company.name(),
         externalId: faker.string.numeric(8),
-        poiName: `[MyTens] ${faker.company.name()}`
+        poiName: `[MyTens] ${faker.company.name()}`,
+        invalidToken: faker.string.alphanumeric(64)
     };
 }
  
