@@ -10,7 +10,8 @@ export function getDataFaker() {
         companyName: faker.company.name(),
         externalId: faker.string.numeric(8),
         poiName: `[MyTens] ${faker.company.name()}`,
-        invalidToken: faker.string.alphanumeric(64)
+        invalidToken: faker.string.alphanumeric(64),
+        coordinateRandom: faker.string.numeric(6)
     };
 }
  

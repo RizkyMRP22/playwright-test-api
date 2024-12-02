@@ -17,7 +17,6 @@ export const getStorage = (fileName: string): string => {
 export const getFileUpload = (fileName: string, type: string): Buffer | null => {
     try {
         const filePath = path.join(__dirname, `../assets/${type}/${fileName}`);
-        console.log('Resolved file path:', filePath);
         
         if (fs.existsSync(filePath)) {
             const fileBuffer = fs.readFileSync(filePath);
