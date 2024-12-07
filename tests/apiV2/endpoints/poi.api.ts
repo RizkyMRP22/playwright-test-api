@@ -71,6 +71,44 @@ export class PoiEndpoints extends BaseAPI {
         }
     }
 
+    static async postUploadEvidence(
+        request: APIRequestContext,
+        loginToken: string,
+        filename: string,
+        infoPoi: string,
+    ): Promise<APIResponse> {
+        const poiId = Number(infoPoi);
+        const type = 'respondent';
+        const fileBuffer = getFileUpload(filename, 'images');
+    
+        if (!fileBuffer) {
+            throw new Error(`File "${filename}" could not be found or read.`);
+        }
+    
+        const formData = {
+            photo: {
+                name: filename,
+                mimeType: 'image/jpeg',
+                buffer: fileBuffer
+            },
+            poiId: poiId,
+            type: type
+        };
+    
+        try {
+            return await request.post('/business-owner/v2/hero/poi/assignment/upload', {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`,
+                },
+                multipart: formData,
+            });
+        } catch (error) {
+            console.error('Error during file upload:', error);
+            throw error;
+        }
+    }
+    
+
     /**
      * Adds a new POI.
      * @param request - Playwright's APIRequestContext
@@ -146,4 +184,119 @@ export class PoiEndpoints extends BaseAPI {
             }
         );
     }
+
+    static async getAssignmentPoiList(
+        request: APIRequestContext,
+        loginToken: string,
+        params?: Record<string, string | number | boolean>
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'GET',
+                endPoint: `/business-owner/v2/hero/poi/assignment`,
+                body: params,
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async getPoiList(
+        request: APIRequestContext,
+        loginToken: string,
+        params?: Record<string, string | number | boolean>
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'GET',
+                endPoint: `/business-owner/v1/hero/poi/list-poi`,
+                body: params,
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async postAssignmentPoi(
+        request: APIRequestContext,
+        loginToken: string,
+        payload: Record<string, any>
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'POST',
+                endPoint: '/business-owner/v1/hero/poi/assign-poi',
+                body: payload,
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async postSubmitSurvey(
+        request: APIRequestContext,
+        loginToken: string,
+        payload: Record<string, any>
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'POST',
+                endPoint: '/business-owner/v2/hero/poi/assignment/submit',
+                body: payload,
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async getSurveyList(
+        request: APIRequestContext,
+        loginToken: string,
+        params?: Record<string, string | number | boolean>
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'GET',
+                endPoint: `/business-owner/v1/hero/poi/list-validation-poi`,
+                body: params,
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async postApprovalSurvey(
+        request: APIRequestContext,
+        loginToken: string,
+        payload: Record<string, any>
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'POST',
+                endPoint: '/business-owner/v1/hero/poi/approval-poi',
+                body: payload,
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
 };
