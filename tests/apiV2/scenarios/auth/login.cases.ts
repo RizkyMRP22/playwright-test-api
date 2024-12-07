@@ -1,5 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
-import { AuthEndpoints } from '../../endpoints/auth.api';
+import { AuthEndpoints , IAuth} from '../../endpoints/auth.api';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 
 class LoginCases extends BaseTestCase {
@@ -7,8 +7,8 @@ class LoginCases extends BaseTestCase {
      * Valid login scenario.
      * Verifies response code and message for successful login.
      */
-    static async validLogin(request: APIRequestContext): Promise<any> {
-        const response = await AuthEndpoints.postLogin(request);
+    static async validLogin(request: APIRequestContext, payload?:IAuth): Promise<any> {
+        const response = await AuthEndpoints.postLogin(request, payload);
         const responseData = await response.json();
 
         this.assertCompare(

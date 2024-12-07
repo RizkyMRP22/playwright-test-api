@@ -14,6 +14,14 @@ test.describe('API POST Login', () => {
     test('Verify Login disable after 5x login with Invalid Username/Password', async ({ request }) => {
         await LoginCases.invalidLogin5Times(request);
     });
+
+    test('Verify user can login with valid account (PIC WITEL)', async ({ request }) => {
+        const payload = {
+            username: process.env.NIK_PIC_WITEL,
+            password: process.env.PASSWORD
+        }
+        await LoginCases.validLogin(request, payload);
+    });
 });
 
 test.describe('API GET Profile', () => {
