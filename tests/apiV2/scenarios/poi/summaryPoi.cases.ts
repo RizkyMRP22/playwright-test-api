@@ -15,9 +15,25 @@ class SummaryPoiCases extends BaseTestCase {
 
         if (missingKeys.length > 0 || unexpectedKeys.length > 0) {
             if (missingKeys.length > 0) {
+                this.assertCompare([
+                    {
+                        message: 'Expected no have missing keys',
+                        actual: missingKeys.length,
+                        expected: 0,
+                        useSoft: true
+                    }
+                ], responseData);
                 console.info("Missing Keys: ", missingKeys);
             }
             if (unexpectedKeys.length > 0) {
+                this.assertCompare([
+                    {
+                        message: 'Expected no have unexpected keys',
+                        actual: unexpectedKeys.length,
+                        expected: 0,
+                        useSoft: true
+                    }
+                ], responseData);
                 console.info("Unexpected Keys: ", unexpectedKeys);
             }
         }
@@ -40,18 +56,6 @@ class SummaryPoiCases extends BaseTestCase {
                 actual: responseData.meta.source,
                 expected: 'MyIndibiz Assistant',
                 useSoft: true,
-            },
-            {
-                message: 'Expected no have missing keys',
-                actual: missingKeys.length,
-                expected: 0,
-                useSoft: true
-            },
-            {
-                message: 'Expected no have unexpected keys',
-                actual: unexpectedKeys.length,
-                expected: 0,
-                useSoft: true
             }
         ],
             responseData

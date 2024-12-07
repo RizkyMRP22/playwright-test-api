@@ -7,6 +7,8 @@ import PayloadRequest from '../../../../helpers/generatePayload';
 import DetailPoiCases from '../../scenarios/poi/detailPoi.cases';
 import AssignmentPoiDetailCases from '../../scenarios/poi/assignmentPoiDetail.cases';
 import CustomAssertion from '../../../../helpers/customAssertion';
+import BaseTestCase from '../../../../helpers/baseTestCase';
+
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -30,10 +32,9 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await LoginCases.validLogin(request);
-        loginToken = response.data.accessToken;
+        loginToken = response.data.accessToken
+        email = response.data.email;
         nik = response.data.nik;
-        email = response.data.email
-
     });
 
     test('Verify user can get summary POI', async ({ request }) => {
@@ -73,23 +74,21 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
         const response = await SummaryPoiCases.getSummaryPOI(request, loginToken)
         const expectedTotalPoi = summaryPoiExisting.totalPoi + 1;
         const expectedAssignedPoi = summaryPoiExisting.assigned + 1;
-
-        console.info(expectedTotalPoi)
-        console.info(expectedAssignedPoi)
-
-        CustomAssertion.expectCompare({
-            message: `Expected Total POI count update, from ${summaryPoiExisting.totalPoi} to ${expectedTotalPoi}`,
-            actual: response.data.totalPoi,
-            expected: expectedTotalPoi,
-            useSoft: true
-        });
-
-        CustomAssertion.expectCompare({
-            message: `Expected assigned POI count to updated, from ${summaryPoiExisting.assigned} to ${expectedAssignedPoi}`,
-            actual: response.data.assigned,
-            expected: expectedAssignedPoi,
-            useSoft: true
-        });
+        
+        BaseTestCase.assertCompare([
+            {
+                message: `Expected Total POI count update, from ${summaryPoiExisting.totalPoi} to ${expectedTotalPoi}`,
+                actual: response.data.totalPoi,
+                expected: expectedTotalPoi,
+                useSoft: true
+            },
+            {
+                message: `Expected assigned POI count to updated, from ${summaryPoiExisting.assigned} to ${expectedAssignedPoi}`,
+                actual: response.data.assigned,
+                expected: expectedAssignedPoi,
+                useSoft: true
+            }
+        ], response.data);
     });
 
 });
