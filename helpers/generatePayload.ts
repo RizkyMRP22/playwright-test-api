@@ -292,22 +292,19 @@ class PayloadRequest {
         ]
       },
       "poiActivity": {
-        "isInterested": {
-          "label": "Iya, Tertarik",
-          "value": true,
-          "activityType": "Survey",
-          "activityStartDate": "2024-12-03T17:00:00.000Z",
-          "activityEndDate": "2024-12-03T18:00:00.000Z",
-          "activityNotes": "Testing automation test",
-          "voiceCustomer": "",
-          "activityFiles": [
+        "isInterested": true,
+        "activityType": "Survey",
+        "activityStartDate": "2024-12-10T17:00:00.000Z",
+        "activityEndDate": "2024-12-10T18:00:00.000Z",
+        "activityNotes": `Testing automation test for activity ${extractData.randomNumber}`,
+        "voiceCustomer": `Testing automation test for voice customer ${extractData.randomNumber}`,
+        "activityFiles": [
             {
-              "fileId": "staging_8983_Lead_Sequence_Diagram_from_ChatGPT_png.png",
-              "fileName": "Lead Sequence Diagram from ChatGPT.png"
+                "fileId": payload.fileId,
+                "fileName": payload.fileName
             }
-          ]
-        }
-      }
+        ]
+    }
     }
   }
 }

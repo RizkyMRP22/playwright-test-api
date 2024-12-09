@@ -2,8 +2,14 @@ import { APIRequestContext } from '@playwright/test';
 import { PoiEndpoints } from '../../endpoints/poi.api'
 import BaseTestCase from '../../../../helpers/baseTestCase';
 
+interface Info {
+    action: string;
+    email: string;
+    poiId: string;
+}
+
 class ApprovalSurveyPoiCases extends BaseTestCase{
-    static async postApprovalSurvey (request: APIRequestContext, loginToken: string, info: any): Promise<any> {
+    static async postApprovalSurvey (request: APIRequestContext, loginToken: string, info: Info): Promise<any> {
         const payload = {
             action: info.action,
             email: info.email,
@@ -20,6 +26,7 @@ class ApprovalSurveyPoiCases extends BaseTestCase{
                 useSoft: true
             }
         ], responseData);
+        return responseData;
     };
 }
 

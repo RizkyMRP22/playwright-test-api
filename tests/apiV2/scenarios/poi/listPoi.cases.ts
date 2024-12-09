@@ -1,5 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
-import { PoiEndpoints } from '../../endpoints/poi.api'
+import { PoiEndpoints } from '../../endpoints/poi.api';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 import { saveStorage } from '../../../../helpers/parsingData';
 
@@ -20,7 +20,7 @@ interface Params {
 }
 
 class listPoiCases extends BaseTestCase {
-    static async getListPoi(request: APIRequestContext, loginToken: string, params: any): Promise<any> {
+    static async getListPoi(request: APIRequestContext, loginToken: string, params: Params): Promise<any> {
         const queryParams: { [key: string]: string | number | boolean } = {
             ...params,
             ...(params.startDateSurvey ? { startDateSurvey: params.startDateSurvey.toISOString() } : {}),

@@ -1,4 +1,4 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { test, APIRequestContext } from '@playwright/test';
 import LoginCases from '../../scenarios/auth/login.cases';
 import SummaryPoiCases from '../../scenarios/poi/summaryPoi.cases';
 import UploadImagesCases from '../../scenarios/poi/uploadImages.cases';
@@ -6,7 +6,6 @@ import AddNewPOICases from '../../scenarios/poi/addNewPoi.cases';
 import PayloadRequest from '../../../../helpers/generatePayload';
 import DetailPoiCases from '../../scenarios/poi/detailPoi.cases';
 import AssignmentPoiDetailCases from '../../scenarios/poi/assignmentPoiDetail.cases';
-import CustomAssertion from '../../../../helpers/customAssertion';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 
 
@@ -23,8 +22,6 @@ interface SummaryPoi {
 test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
 
     let loginToken: string;
-    let email: string;
-    let nik: string;
     let poiId: string;
     let imageUrl: string;
     let summaryPoiExisting: SummaryPoi;
@@ -33,8 +30,6 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await LoginCases.validLogin(request);
         loginToken = response.data.accessToken
-        email = response.data.email;
-        nik = response.data.nik;
     });
 
     test('Verify user can get summary POI', async ({ request }) => {
@@ -55,7 +50,9 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
             ...PayloadRequest.addNewPoi()
         }
 
+        console.log("Request: ",payload)
         const response = await AddNewPOICases.postAddNewPoi(request, loginToken, payload);
+        console.log("Response: ",response)
         poiId = response.data.idPoi
         payloads = payload
     });

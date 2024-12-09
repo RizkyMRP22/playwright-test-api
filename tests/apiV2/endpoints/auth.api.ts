@@ -1,5 +1,5 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import { BaseAPI, DataAPI } from '../../../helpers/baseApi';
+import { BaseAPI } from '../../../helpers/baseApi';
 import dotenv from 'dotenv';
 dotenv.config();
 

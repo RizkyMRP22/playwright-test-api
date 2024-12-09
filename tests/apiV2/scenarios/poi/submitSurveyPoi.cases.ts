@@ -1,6 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
-import { PoiEndpoints } from '../../endpoints/poi.api'
-import { getDataFaker } from '../../../../helpers/faker';
+import { PoiEndpoints } from '../../endpoints/poi.api';
 import PayloadRequest from '../../../../helpers/generatePayload';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 import { getStorage } from '../../../../helpers/parsingData';
@@ -18,9 +17,11 @@ class SubmitSurveyPoiCases extends BaseTestCase {
             longitude: payload.long,
             opportunity: payload.segment.opportunity,
             address: payload.address,
-            photo: infoEvidence.pathUrl
+            photo: infoEvidence.pathUrl,
+            fileName: infoEvidence.fileName,
+            fileId: infoEvidence.fileId,
         };
-
+        console.log("Payload Submit Survey Poi: ",payloads)
         const data = PayloadRequest.submitSurveyPoi(payloads)
         const response = await PoiEndpoints.postSubmitSurvey(request, loginToken, data);
         const responseData = await response.json();

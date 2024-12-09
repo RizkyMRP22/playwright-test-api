@@ -1,6 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
-import { PoiEndpoints } from '../../endpoints/poi.api'
-import { getDataFaker } from '../../../../helpers/faker';
+import { PoiEndpoints } from '../../endpoints/poi.api';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 
 class AssignmentPoiList extends BaseTestCase {

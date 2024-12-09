@@ -1,4 +1,4 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { test, APIRequestContext } from '@playwright/test';
 import LoginCases from '../../scenarios/auth/login.cases';
 import ProfileCases from '../../scenarios/auth/profile.cases';
 

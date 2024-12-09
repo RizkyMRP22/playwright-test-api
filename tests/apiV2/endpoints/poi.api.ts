@@ -108,6 +108,37 @@ export class PoiEndpoints extends BaseAPI {
         }
     }
     
+    static async postEvidence(
+        request: APIRequestContext,
+        loginToken: string,
+        payload: any,
+    ): Promise<APIResponse> {
+        const fileBuffer = getFileUpload(payload.filename, 'images');
+    
+        if (!fileBuffer) {
+            throw new Error(`File "${payload.filename}" could not be found or read.`);
+        }
+    
+        const formData = {
+            file: {
+                name: payload.filename,
+                mimeType: 'image/jpeg',
+                buffer: fileBuffer
+            }
+        };
+    
+        try {
+            return await request.post(`/business-owner/v3/hero/poi/assignment/upload?poiId=${payload.poiId}&type=${payload.type}`, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`,
+                },
+                multipart: formData,
+            });
+        } catch (error) {
+            console.error('Error during file upload:', error);
+            throw error;
+        }
+    }
 
     /**
      * Adds a new POI.

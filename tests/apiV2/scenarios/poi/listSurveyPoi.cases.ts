@@ -1,7 +1,6 @@
 import { APIRequestContext } from '@playwright/test';
-import { PoiEndpoints } from '../../endpoints/poi.api'
+import { PoiEndpoints } from '../../endpoints/poi.api';
 import BaseTestCase from '../../../../helpers/baseTestCase';
-import { saveStorage } from '../../../../helpers/parsingData';
 
 interface Params {
     page: number;

@@ -1,15 +1,13 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { test } from '@playwright/test';
 import LoginCases from '../../scenarios/auth/login.cases';
 import SummaryPoiCases from '../../scenarios/poi/summaryPoi.cases';
 import listPoiCases from '../../scenarios/poi/listPoi.cases';
 import CreateAssignmentPoi from '../../scenarios/poi/createAssignmentPoi.cases';
-import { saveStorage, getStorage } from '../../../../helpers/parsingData';
 import DetailPoiCases from '../../scenarios/poi/detailPoi.cases';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 import UploadImagesCases from '../../scenarios/poi/uploadImages.cases';
 import SubmitSurveyPoiCases from '../../scenarios/poi/submitSurveyPoi.cases';
 import ApprovalSurveyPoiCases from '../../scenarios/poi/approvalSurvey.cases';
-import { console } from 'inspector';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -24,7 +22,6 @@ interface SummaryPoi {
 
 let loginToken: string;
 let email: string;
-let nik: string;
 let poiId: string;
 let summaryPoiExisting: SummaryPoi;
 
@@ -35,7 +32,6 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
             const response = await LoginCases.validLogin(request);
             loginToken = response.data.accessToken
             email = response.data.email;
-            nik = response.data.nik;
         });
 
         await test.step('Get POI Summary', async () => {
@@ -101,6 +97,11 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
             await delay(1000);
         }); 
 
+        await test.step('Upload Evidence Activity', async () => {
+            await UploadImagesCases.postEvidence(request, loginToken, poiId);
+            await delay(1000);
+        }); 
+
         await test.step('Submit Survey POI', async () => {
             await delay(1000);
             await SubmitSurveyPoiCases.submitSurveyPoi(request, loginToken);
@@ -157,8 +158,7 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
                 action:'valid'
 
             }
-            const response = await ApprovalSurveyPoiCases.postApprovalSurvey(request,loginTokenMGR, payload);
-            console.log(response);
+            await ApprovalSurveyPoiCases.postApprovalSurvey(request,loginTokenMGR, payload);
         });
     });
 

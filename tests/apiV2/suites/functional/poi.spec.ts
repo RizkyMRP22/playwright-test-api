@@ -1,4 +1,4 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { test, APIRequestContext } from '@playwright/test';
 import LoginCases from '../../scenarios/auth/login.cases';
 import DetailPoiCases from '../../scenarios/poi/detailPoi.cases';
 import AssignmentPoiDetailCases from '../../scenarios/poi/assignmentPoiDetail.cases';
@@ -15,13 +15,11 @@ import ListSurveyPoiCases from '../../scenarios/poi/listSurveyPoi.cases';
 let loginToken:string;
 let email:string;
 let poiId:string;
-let nik:string;
 
 test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
     const response = await LoginCases.validLogin(request);
     loginToken = response.data.accessToken
     email = response.data.email;
-    nik = response.data.nik;
 });
 
 test.describe('API GET Summary POI', () => {
@@ -39,12 +37,13 @@ test.describe('API GET List POI', () => {
     test('[200] Verify user can get POI list', async ({ request }) => {
         const params = {
             page: 1,
-            size: 2,
+            size: 10,
             sort: "desc",
             status: "dataMentah"
         }
        const response = await listPoiCases.getListPoi(request, loginToken, params);
-       poiId = response.data[0]?.idPoi;
+       console.log(response);
+       poiId = response
        saveStorage('poiId', poiId);
     });
 });
@@ -108,7 +107,7 @@ test.describe('API POST Upload Image', () => {
 });
 
 test.describe('API POST Upload Evidence Survey', () => {
-    test.fail('[200] Verify user can Upload Evidence Survey', async ({ request }) => {
+    test('[200] Verify user can Upload Evidence Survey', async ({ request }) => {
         const poiId = getStorage('poiId');
         await UploadImagesCases.postUploadEvidence(request, loginToken, poiId);
     });
@@ -121,7 +120,7 @@ test.describe('API POST Submit Survey POI', () => {
 });
 
 test.describe('API GET List Survey POI', () => {
-    test.only('[200] Verify user can get list Survey POI', async ({ request }) => {
+    test('[200] Verify user can get list Survey POI', async ({ request }) => {
         const params = {
             page:1,
             size:10
@@ -131,13 +130,10 @@ test.describe('API GET List Survey POI', () => {
     });
 });
 
-test.describe('API POST Approval Survey POI', () => {
-    test.only('[200] Verify user can get list Survey POI', async ({ request }) => {
-        const params = {
-            page:1,
-            size:10
-        }
-        const response = await ListSurveyPoiCases.getListSurveyPoi(request, loginToken, params, 35568323);
-        console.log(response);
-    });
+test.describe('API POST Upload Images', () => {
+    test('[200] Verify User can upload image for activity evidence', async ({ request }) => { 
+        const poiId = '10224686';
+        const response = await UploadImagesCases.postEvidence(request, loginToken, poiId)
+        console.log('response: ', response);
+    })
 });
