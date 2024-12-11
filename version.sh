@@ -1,5 +1,5 @@
 # Replace v1.2.0 with the new version you want to add
-NEW_VERSION="v1.2.0"
+NEW_VERSION="v1.1.0"
 
 # Create a new tag
 git tag -a "$NEW_VERSION" -m "update changelog.md"
