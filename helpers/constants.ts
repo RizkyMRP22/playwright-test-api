@@ -380,5 +380,191 @@ class Constants {
         'invalid',
         'notFound'
     ];
+
+    static expectedOpportunities = [
+        {
+            id:3,
+            name: 'Government',
+            sector:[
+                {
+                    "id": 173,
+                    "name": "Layanan Bisnis",
+                    "opportunityId": 3
+                },
+                {
+                    "id": 171,
+                    "name": "Education",
+                    "opportunityId": 3
+                },
+                {
+                    "id": 172,
+                    "name": "Kesehatan",
+                    "opportunityId": 3
+                }
+            ]
+        },
+        {
+            id: 2,
+            name: 'Enterprise',
+            sector: [
+                {
+                    "id": 156,
+                    "name": "Agrikultur & Perhutanan",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 157,
+                    "name": "BUMN & BUMD",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 158,
+                    "name": "Banking & Finance",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 159,
+                    "name": "Education",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 160,
+                    "name": "Financial Non Banking",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 161,
+                    "name": "Hospitality, Parawisata & Welfare",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 162,
+                    "name": "Infrastruktur & Properti",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 163,
+                    "name": "Kesehatan",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 164,
+                    "name": "Layanan Bisnis",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 165,
+                    "name": "Layanan Profesional",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 166,
+                    "name": "Manufaktur/Pabrik",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 167,
+                    "name": "Perdagangan & Distribusi",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 168,
+                    "name": "Pertambangan & Energi",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 169,
+                    "name": "Retail & Distribusi",
+                    "opportunityId": 2
+                },
+                {
+                    "id": 170,
+                    "name": "Transportasi & Logistik",
+                    "opportunityId": 2
+                }
+            ]
+        },
+        {
+            id: 1,
+            name: 'Business Service',
+            sector: [
+                {
+                    "id": 107,
+                    "name": "Education",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 141,
+                    "name": "Agrikultur & Perhutanan",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 142,
+                    "name": "BUMN & BUMD",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 143,
+                    "name": "Banking & Finance",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 145,
+                    "name": "Financial non Banking",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 146,
+                    "name": "Hospitality, Parawisata & Welfare",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 147,
+                    "name": "Infrastruktur & Properti",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 148,
+                    "name": "Kesehatan",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 149,
+                    "name": "Layanan Bisnis",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 150,
+                    "name": "Layanan Profesional",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 151,
+                    "name": "Manufaktur/Pabrik",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 152,
+                    "name": "Perdagangan & Distribusi",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 153,
+                    "name": "Pertambangan & Energi",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 154,
+                    "name": "Retail & Distribusi",
+                    "opportunityId": 1
+                },
+                {
+                    "id": 155,
+                    "name": "Transportasi & Logistik",
+                    "opportunityId": 1
+                }
+            ]
+        }
+    ];
 }
 export default Constants;

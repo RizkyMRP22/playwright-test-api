@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx playwright test tests/api/suites",
-    "e2e": "npx playwright test tests/api/suites/e2e",
-    "e2e-submit": "npx playwright test tests/api/suites/e2e/hotd/submitSurvey.spec.ts",
+    "start": "npx playwright test tests/apiV2/suites",
+    "add-new": "npx playwright test tests/apiV2/suites/e2e/addNewPoi.spec.ts",
+    "submit-poi": "npx playwright test tests/apiV2/suites/e2e/submitProfilingPoi.spec.ts",
     "functional": "npx playwright test tests/api/suites/functional",
     "report": "npx playwright show-report"
   },
@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.15.0",
+    "@eslint/js": "^9.16.0",
     "@playwright/test": "^1.48.2",
     "@types/chai": "^5.0.1",
     "@types/node": "^22.8.7",
@@ -23,15 +23,15 @@
     "ajv": "^8.17.1",
     "chai": "^5.1.2",
     "dotenv": "^16.4.5",
-    "eslint": "^9.15.0",
+    "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-playwright": "^2.0.1",
-    "globals": "^15.12.0",
+    "globals": "^15.13.0",
     "playwright-msteams-reporter": "^0.0.12",
     "prettier": "3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.14.0"
+    "typescript-eslint": "^8.17.0"
   },
   "dependencies": {
     "@cucumber/cucumber": "^7.3.2",

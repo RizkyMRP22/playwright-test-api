@@ -3,12 +3,39 @@ import path from 'path';
 import { expect } from '@playwright/test';
 import { ACTION_WORDING } from './constants';
 
-export const saveStorage = (fileName: string, token: string): void => {
+export const saveStorageNew = (fileName: string, token: Record<string, any>): void => {
+  const FILE_PATH = path.resolve(__dirname, `../assets/json/${fileName}.localStorage.json`);
+
+  let fileData = {};
+  if (fs.existsSync(FILE_PATH)) {
+      // Read existing file data
+      const rawData = fs.readFileSync(FILE_PATH, 'utf-8');
+      try {
+          fileData = JSON.parse(rawData);
+      } catch (error) {
+          console.error('Error parsing JSON file:', error);
+      }
+  }
+
+  // Ensure the file structure has the `fileName` key as an object
+  fileData[fileName] = fileData[fileName] || {};
+
+  // Merge the new token into the existing object
+  fileData[fileName] = {
+      ...fileData[fileName],
+      ...token
+  };
+
+  // Write updated data back to the file
+  fs.writeFileSync(FILE_PATH, JSON.stringify(fileData, null, 2));
+};
+
+export const saveStorage = (fileName: string, token: any): void => {
     const FILE_PATH = path.resolve(__dirname, `../assets/json/${fileName}.localStorage.json`);
     fs.writeFileSync(FILE_PATH, JSON.stringify({ [fileName]: token }, null, 2));
 }
 
-export const getStorage = (fileName: string): string => {
+export const getStorage = (fileName: any): any => {
     const FILE_PATH = path.resolve(__dirname, `../assets/json/${fileName}.localStorage.json`);
     const token = JSON.parse(fs.readFileSync(FILE_PATH, 'utf-8'));
     return token[fileName];
