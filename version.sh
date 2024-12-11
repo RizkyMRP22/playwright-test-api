@@ -15,9 +15,8 @@ if git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
     git log "$NEW_VERSION"..HEAD --pretty=format:"- %h %s (%ad)" --date=short
     echo ""
   } | cat - CHANGELOG.md > TEMP_CHANGELOG.md && mv TEMP_CHANGELOG.md CHANGELOG.md
-
-  # Push the tag and changes to the remote repository
-  git push origin "$NEW_VERSION"
+  # # Push the tag and changes to the remote repository
+  # git push origin "$NEW_VERSION"  
 else
   echo "Error: Failed to create tag $NEW_VERSION. Aborting."
 fi
