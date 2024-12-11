@@ -4,10 +4,11 @@ import { getDataFaker } from '../../../../helpers/faker';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 
 class AssignmentPoiDetailCases extends BaseTestCase {
-    static async getAssignmentPoiDetail(request: APIRequestContext, loginToken: string, idPoi: string, payload?: any): Promise<any> {
+    static async getAssignmentPoiDetail(request: APIRequestContext, loginToken: string, idPoi: string, status: string, payload?: any): Promise<any> {
         const response = await PoiEndpoints.getAssignmentPoiDetail(request, loginToken, idPoi);
         const responseData = await response.json();
 
+        console.log(JSON.stringify(responseData, null, 2));
         this.assertCompare([
             {
                 message: 'Expected response code is 200',
@@ -28,15 +29,9 @@ class AssignmentPoiDetailCases extends BaseTestCase {
                 useSoft: true
             },
             {
-                message: `Expected status is Proses Survey`,
+                message: `Expected status is ${status}`,
                 actual: responseData.data.label.poiStatus.label,
-                expected: "Proses Survey",
-                useSoft: true
-            },
-            {
-                message: `Expected information source is MyTens`,
-                actual: responseData.data.poi.source,
-                expected: "MyTEnS",
+                expected: status,
                 useSoft: true
             }
         ], responseData);

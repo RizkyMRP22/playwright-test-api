@@ -27,7 +27,7 @@ class PayloadRequest {
     return { latitude: newLatitude, longitude: newLongitude };
   }
 
-  static addNewPoi() {
+  static addNewPoi(payload: any) {
     const baseLatitude = -7.305260501068479;
     const baseLongitude = 108.22631835937501;
     const { latitude, longitude } = this.generateRandomCoordinate(baseLatitude, baseLongitude, 500);
@@ -39,10 +39,11 @@ class PayloadRequest {
       latitude: latitude,
       longitude: longitude,
       name: extractData.poiName,
-      ecosystem: "Indibiz Media & Komunikasi",
-      sectorId: 173,
-      subsectorId: 563,
-      opportunityId: 3
+      ecosystem: payload.ecosystem,
+      sectorId: payload.sectorId,
+      subsectorId: payload.subSectorId,
+      opportunityId: payload.opportunityId,
+      photo:payload.photo
     };
   }
 

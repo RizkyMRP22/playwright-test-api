@@ -10,7 +10,10 @@ import UploadImagesCases from '../../scenarios/poi/uploadImages.cases';
 import SubmitSurveyPoiCases from '../../scenarios/poi/submitSurveyPoi.cases';
 import { saveStorage, getStorage } from '../../../../helpers/parsingData';
 import ListSurveyPoiCases from '../../scenarios/poi/listSurveyPoi.cases';
-
+import EcosystemListCases from '../../scenarios/poi/ecosystemList.cases';
+import OpportunityListCases from '../../scenarios/poi/opportunityList.cases';
+import SectorListCases from '../../scenarios/poi/sectorList.Cases';
+import SubSectorCases from '../../scenarios/poi/subSector.cases';
 
 let loginToken:string;
 let email:string;
@@ -79,7 +82,8 @@ test.describe('API GET Detail Assignment POI', () => {
 
     const poiId = '63347479';
     test('[200] Verify user can get Assignment POI detail', async ({ request }) => {
-        await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId);
+        const status = 'Proses Survey';
+        await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId,status);
     });
 
     test('[401] Verify user cant get Assignment POI detail with invalid token', async ({ request }) => {
@@ -125,8 +129,7 @@ test.describe('API GET List Survey POI', () => {
             page:1,
             size:10
         }
-        const response = await ListSurveyPoiCases.getListSurveyPoi(request, loginToken, params, 35568323);
-        console.log(response);
+        await ListSurveyPoiCases.getListSurveyPoi(request, loginToken, params, 35568323);
     });
 });
 
@@ -136,4 +139,54 @@ test.describe('API POST Upload Images', () => {
         const response = await UploadImagesCases.postEvidence(request, loginToken, poiId)
         console.log('response: ', response);
     })
+});
+
+// test.describe('API GET List Opportunities Business', () => {
+//     test.only('[200] Verify user can get list opportunities business', async ({ request }) => {
+//        opportunityId =  await OpportunityListCases.getOpportunityList(request, loginToken);
+//     });
+// });
+
+// test.describe('API GET List Sector Business', () => {
+//     test.only('[200] Verify user can get list Sector business', async ({ request }) => {
+//         sectorId = await SectorListCases.getSectorList(request, loginToken, opportunityId);
+//     });
+// });
+
+// test.describe('API GET List Sub Sector Business', () => {
+//     test.only('[200] Verify user can get list Sub Sector business', async ({ request }) => {
+//         const response = await SubSectorCases.getSubSector(request, loginToken, sectorId);
+//         expectedEcosystem = response.ecosystem
+//     });
+// });
+
+// test.describe('API GET List Ecosystem Business', () => {
+//     test.only('[200] Verify user can get list ecosystem business', async ({ request }) => {
+//         const response  = await EcosystemListCases.getEcosystemList(request, loginToken);
+//         console.log(`Actual ecosystem ${response} and expected ecosystem ${expectedEcosystem}`)
+//     });
+// });
+
+
+
+test.describe.serial('GET BUSINESS SEGMENT', () => {
+    let opportunityId: number;
+let sectorId: number;
+let subSectorId: number;
+let suggestEcosystem:string;
+    test.only('[200] Verify user can get list opportunities business', async ({ request }) => {
+        opportunityId =  await OpportunityListCases.getOpportunityList(request, loginToken);
+     });
+     test.only('[200] Verify user can get list Sector business', async ({ request }) => {
+        sectorId = await SectorListCases.getSectorList(request, loginToken, opportunityId);
+    });
+    test.only('[200] Verify user can get list Sub Sector business', async ({ request }) => {
+        const response = await SubSectorCases.getSubSector(request, loginToken, sectorId);
+        subSectorId = response.subSectorId;
+        suggestEcosystem = response.ecosystem
+    });
+    test.only('[200] Verify user can get list ecosystem business', async ({ request }) => {
+        const selectedEcosystem  = await EcosystemListCases.getEcosystemList(request, loginToken);
+        console.log(`Actual ecosystem ${selectedEcosystem} and suggestEcosystem ecosystem ${suggestEcosystem}`)
+    });
 });

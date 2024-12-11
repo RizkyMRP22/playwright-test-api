@@ -1,10 +1,25 @@
 import { APIRequestContext } from '@playwright/test';
 import { PoiEndpoints } from '../../endpoints/poi.api'
 import BaseTestCase from '../../../../helpers/baseTestCase';
+import PayloadRequest from '../../../../helpers/generatePayload';
+import { getStorage } from '../../../../helpers/parsingData';
 
 class AddNewPoiCases extends BaseTestCase {
     static async postAddNewPoi(request: APIRequestContext, loginToken: string, payload: any): Promise<any> {
-        const response = await PoiEndpoints.postAddNewPOI(request, loginToken, payload);
+        const getData = getStorage('business')
+        const { sectorId, subSectorId, opportunityId, suggestEcosystem, selectedEcosystem } = getData;
+
+        const payloads = {
+            photo: payload.photo,
+            ecosystem: selectedEcosystem,
+            sectorId: sectorId,
+            subSectorId: subSectorId,
+            opportunityId: opportunityId
+        }
+
+        const data = PayloadRequest.addNewPoi(payloads)
+        console.log(data)
+        const response = await PoiEndpoints.postAddNewPOI(request, loginToken, data);
         const responseData = await response.json();
 
         this.assertCompare([
@@ -20,6 +35,12 @@ class AddNewPoiCases extends BaseTestCase {
                 expected: 'berhasil mengirim data',
                 useSoft: true
             },
+            {
+                message: 'Expected message is "berhasil mengirim data"',
+                actual: responseData.message,
+                expected: 'berhasil mengirim data',
+                useSoft: true
+            }
         ], responseData);
 
         this.assertDefined([

@@ -7,7 +7,10 @@ import PayloadRequest from '../../../../helpers/generatePayload';
 import DetailPoiCases from '../../scenarios/poi/detailPoi.cases';
 import AssignmentPoiDetailCases from '../../scenarios/poi/assignmentPoiDetail.cases';
 import BaseTestCase from '../../../../helpers/baseTestCase';
-
+import OpportunityListCases from '../../scenarios/poi/opportunityList.cases';
+import SectorListCases from '../../scenarios/poi/sectorList.Cases';
+import SubSectorCases from '../../scenarios/poi/subSector.cases';
+import EcosystemListCases from '../../scenarios/poi/ecosystemList.cases';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -25,7 +28,12 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
     let poiId: string;
     let imageUrl: string;
     let summaryPoiExisting: SummaryPoi;
-    let payloads: any
+    let payloads: any;
+    let opportunityId: number;
+    let sectorId: number;
+    let subSectorId: number;
+    let suggestEcosystem:string;
+    let selectedEcosystem:string;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
         const response = await LoginCases.validLogin(request);
@@ -38,6 +46,20 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
         console.info(summaryPoiExisting)
     });
 
+    test('Choose Opportunity Business', async ({ request }) => {
+        await OpportunityListCases.getOpportunityList(request, loginToken);
+     });
+     test('Choose Sector Business', async ({ request }) => {
+       await SectorListCases.getSectorList(request, loginToken, opportunityId);
+    });
+    test('Choose Sub Sector Business', async ({ request }) => {
+       await SubSectorCases.getSubSector(request, loginToken, sectorId);
+    });
+    test('Choose Ecosystem Business', async ({ request }) => {
+        selectedEcosystem  = await EcosystemListCases.getEcosystemList(request, loginToken);
+        console.log(`Selected ecosystem ${selectedEcosystem} and suggest Ecosystem ${suggestEcosystem}`)
+    });
+
     test('Upload Image', async ({ request }) => {
         const filename = 'background_diponogoro.jpeg';
         const response = await UploadImagesCases.postUploadImages(request, loginToken, filename);
@@ -47,10 +69,7 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
     test('Create Add New POI from MyTens', async ({ request }: { request: APIRequestContext }) => {
         const payload = {
             photo: imageUrl,
-            ...PayloadRequest.addNewPoi()
         }
-
-        console.log("Request: ",payload)
         const response = await AddNewPOICases.postAddNewPoi(request, loginToken, payload);
         console.log("Response: ",response)
         poiId = response.data.idPoi
@@ -58,11 +77,17 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
     });
 
     test('Validate POI detail has status Proses Survei', async ({ request }) => {
-        await DetailPoiCases.getPoiDetail(request, loginToken, poiId, payloads);
+        const status = {
+            label0:'Proses Survey',
+            label1: 'Assigned'
+        }
+
+        await DetailPoiCases.getPoiDetail(request, loginToken, poiId, status);
     });
 
     test('Validate assignment POI detail has status Proses Survei', async ({ request }) => {
-        await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId, payloads);
+        const status = 'Proses Survey';
+        await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId,status, payloads);
     });
 
     test('Get Summary POI - After Add New POI', async ({ request }: { request: APIRequestContext }) => {

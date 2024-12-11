@@ -330,4 +330,74 @@ export class PoiEndpoints extends BaseAPI {
         );
     }
 
+    static async getEcosystemList(
+        request: APIRequestContext,
+        loginToken: string,
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'GET',
+                endPoint: '/business-owner/v2/hero/poi/assignment/ecosystem',
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async getOpportunities(
+        request: APIRequestContext,
+        loginToken: string,
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'GET',
+                endPoint: '/business-owner/v2/hero/poi/assignment/opportunity',
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async getSectorList(
+        request: APIRequestContext,
+        loginToken: string,
+        params?: Record<string, string | number | boolean>
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'GET',
+                endPoint: `/business-owner/v2/hero/poi/assignment/sector`,
+                body: params,
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
+    static async getSubSectorList(
+        request: APIRequestContext,
+        loginToken: string
+    ): Promise<APIResponse> {
+        return this.callAPI(
+            request,
+            {
+                method: 'GET',
+                endPoint: `/business-owner/v2/hero/poi/assignment/subsector`
+            },
+            {
+                type: 'Bearer',
+                token: loginToken,
+            }
+        );
+    }
+
 };

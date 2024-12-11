@@ -11,22 +11,30 @@ class BaseTestCase {
       actual: any;
       expected: any;
       useSoft?: boolean;
-      contains?: boolean; // New property to indicate "contains" check
+      contains?: boolean; // Indicates "contains" check
+      strictEqual?: boolean; // New property for strict equality check
     }>,
     responseData: any
   ): void {
-    assertionObjects.forEach(({ message, actual, expected, useSoft = false, contains = false }) => {
+    assertionObjects.forEach(({ message, actual, expected, useSoft = false, contains = false, strictEqual = false }) => {
       try {
         if (contains) {
           // Check if "actual" contains "expected"
           const match = expected instanceof Array
             ? expected.some((val) => actual.includes(val))
             : actual.includes(expected);
-
+  
           if (useSoft) {
             expect.soft(match, message).toBeTruthy();
           } else {
             expect(match, message).toBeTruthy();
+          }
+        } else if (strictEqual) {
+          // Handle strict equality assertions
+          if (useSoft) {
+            expect.soft(actual, message).toStrictEqual(expected);
+          } else {
+            expect(actual, message).toStrictEqual(expected);
           }
         } else if (useSoft) {
           // Handle regular assertions
@@ -52,6 +60,7 @@ class BaseTestCase {
       }
     });
   }
+  
 
   /**
    * Perform multiple "defined" assertions.
@@ -81,6 +90,29 @@ class BaseTestCase {
       }
     });
   }
+
+    /**
+   * Logger function to standardize log output.
+   * @param type - The type of log (info, warn, error).
+   * @param message - The message to log.
+   * @param data - Optional additional data to include in the log.
+   */
+    static logger(type: 'info' | 'warn' | 'error', message: string, data?: any): void {
+      const timestamp = new Date().toISOString();
+      switch (type) {
+        case 'info':
+          console.info(`[INFO] ${message}`, JSON.stringify(data,null,2) || '');
+          break;
+        case 'warn':
+          console.warn(`[WARN] ${timestamp} - ${message} \n`, JSON.stringify(data,null,2) || '');
+          break;
+        case 'error':
+          console.error(`[ERROR] ${timestamp} - ${message} \n`, JSON.stringify(data,null,2) || '');
+          break;
+        default:
+          console.log(`[LOG] ${timestamp} - ${message} \n`, JSON.stringify(data,null,2) || '');
+      }
+    }
 }
 
 export default BaseTestCase;
