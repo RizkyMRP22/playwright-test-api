@@ -53,28 +53,28 @@ export const schemas = {
                             "type": "string"
                         },
                         "address": {
-                            "type": "string"
+                            "type": ["string","null"]
                         },
                         "sto": {
-                            "type": "string"
+                            "type": ["string","null"]
                         },
                         "segment": {
                             "type": "object",
                             "properties": {
                                 "sector": {
-                                    "type": "string"
+                                    "type": ["string","null"]
                                 },
                                 "subSector": {
-                                    "type": "string"
+                                    "type": ["string","null"]
                                 },
                                 "ecosystem": {
-                                    "type": "string"
+                                    "type": ["string","null"]
                                 },
                                 "opportunity": {
-                                    "type": "string"
+                                    "type": ["string","null"]
                                 },
                                 "icon": {
-                                    "type": "string"
+                                    "type":["string","null"]
                                 }
                             },
                             "required": ["sector", "subSector", "ecosystem", "opportunity", "icon"]
