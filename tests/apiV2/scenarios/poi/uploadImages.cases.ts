@@ -103,7 +103,6 @@ class UploadImagesCases extends BaseTestCase {
 
         while (retryCount < maxRetries) {
             responseUploadEvidence = await PoiEndpoints.postEvidence(request, loginToken,payload);
-            console.log('responseUploadEvidence: ', responseUploadEvidence);
             if (responseUploadEvidence.ok()) {
                 responseDataUploadEvidence = await responseUploadEvidence.json();
                 saveStorage("evidence-upload", JSON.stringify(responseDataUploadEvidence.data));

@@ -11,6 +11,7 @@ import OpportunityListCases from '../../scenarios/poi/opportunityList.cases';
 import SectorListCases from '../../scenarios/poi/sectorList.Cases';
 import SubSectorCases from '../../scenarios/poi/subSector.cases';
 import EcosystemListCases from '../../scenarios/poi/ecosystemList.cases';
+import { getStorage } from '../../../../helpers/parsingData';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -23,7 +24,6 @@ interface SummaryPoi {
 }
 
 test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
-
     let loginToken: string;
     let poiId: string;
     let imageUrl: string;
@@ -32,85 +32,204 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
     let opportunityId: number;
     let sectorId: number;
     let subSectorId: number;
-    let suggestEcosystem:string;
-    let selectedEcosystem:string;
+    let suggestEcosystem: string;
+    let selectedEcosystem: string;
 
     test.beforeAll(async ({ request }: { request: APIRequestContext }) => {
-        const response = await LoginCases.validLogin(request);
-        loginToken = response.data.accessToken
+        await test.step('Log in to get access token', async () => {
+            const response = await LoginCases.validLogin(request);
+            loginToken = response.data.accessToken;
+        });
     });
 
-    test('Verify user can get summary POI', async ({ request }) => {
-        const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
-        summaryPoiExisting = response.data;
-        console.info(summaryPoiExisting)
-    });
+    test.only('Add New POI - Change Ecosystem', async ({ request }) => {
+        await test.step('Verify user can get summary POI', async () => {
+            const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
+            summaryPoiExisting = response.data;
+            console.info(summaryPoiExisting);
+        });
 
-    test('Choose Opportunity Business', async ({ request }) => {
-        await OpportunityListCases.getOpportunityList(request, loginToken);
-     });
-     test('Choose Sector Business', async ({ request }) => {
-       await SectorListCases.getSectorList(request, loginToken, opportunityId);
-    });
-    test('Choose Sub Sector Business', async ({ request }) => {
-       await SubSectorCases.getSubSector(request, loginToken, sectorId);
-    });
-    test('Choose Ecosystem Business', async ({ request }) => {
-        selectedEcosystem  = await EcosystemListCases.getEcosystemList(request, loginToken);
-        console.log(`Selected ecosystem ${selectedEcosystem} and suggest Ecosystem ${suggestEcosystem}`)
-    });
+        await test.step('Choose Opportunity Business', async () => {
+            await OpportunityListCases.getOpportunityList(request, loginToken);
+        });
 
-    test('Upload Image', async ({ request }) => {
-        const filename = 'background_diponogoro.jpeg';
-        const response = await UploadImagesCases.postUploadImages(request, loginToken, filename);
-        imageUrl = response.data.url
-    });
+        await test.step('Choose Sector Business', async () => {
+            await SectorListCases.getSectorList(request, loginToken, opportunityId);
+        });
 
-    test('Create Add New POI from MyTens', async ({ request }: { request: APIRequestContext }) => {
-        const payload = {
-            photo: imageUrl,
-        }
-        const response = await AddNewPOICases.postAddNewPoi(request, loginToken, payload);
-        console.log("Response: ",response)
-        poiId = response.data.idPoi
-        payloads = payload
-    });
+        await test.step('Choose Sub Sector Business', async () => {
+            await SubSectorCases.getSubSector(request, loginToken, sectorId);
+        });
 
-    test('Validate POI detail has status Proses Survei', async ({ request }) => {
-        const status = {
-            label0:'Proses Survey',
-            label1: 'Assigned'
-        }
+        await test.step('Choose Ecosystem Business', async () => {
+            selectedEcosystem = await EcosystemListCases.getEcosystemList(request, loginToken);
+            console.log(`Selected ecosystem ${selectedEcosystem} and suggest Ecosystem ${suggestEcosystem}`);
+        });
 
-        await DetailPoiCases.getPoiDetail(request, loginToken, poiId, status);
-    });
+        await test.step('Upload Image', async () => {
+            const filename = 'background_diponogoro.jpeg';
+            const response = await UploadImagesCases.postUploadImages(request, loginToken, filename);
+            imageUrl = response.data.url;
+        });
 
-    test('Validate assignment POI detail has status Proses Survei', async ({ request }) => {
-        const status = 'Proses Survey';
-        await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId,status, payloads);
-    });
-
-    test('Get Summary POI - After Add New POI', async ({ request }: { request: APIRequestContext }) => {
-        await delay(2000)
-
-        const response = await SummaryPoiCases.getSummaryPOI(request, loginToken)
-        const expectedTotalPoi = summaryPoiExisting.totalPoi + 1;
-        const expectedAssignedPoi = summaryPoiExisting.assigned + 1;
-        
-        BaseTestCase.assertCompare([
-            {
-                message: `Expected Total POI count update, from ${summaryPoiExisting.totalPoi} to ${expectedTotalPoi}`,
-                actual: response.data.totalPoi,
-                expected: expectedTotalPoi,
-                useSoft: true
-            },
-            {
-                message: `Expected assigned POI count to updated, from ${summaryPoiExisting.assigned} to ${expectedAssignedPoi}`,
-                actual: response.data.assigned,
-                expected: expectedAssignedPoi,
-                useSoft: true
+        await test.step('Create Add New POI from MyTens', async () => {
+            const getData = getStorage('business')
+            const { sectorId, subSectorId, opportunityId, suggestEcosystem, selectedEcosystem, sectorName, subSectorName, opportunityName } = getData;
+    
+            const requests = {
+                photo: imageUrl,
+                ecosystem: selectedEcosystem,
+                sectorId: sectorId,
+                subSectorId: subSectorId,
+                opportunityId: opportunityId,
+                sectorName: sectorName,
+                subSectorName:subSectorName,
+                opportunityName: opportunityName
             }
-        ], response.data);
+            
+            const response = await AddNewPOICases.postAddNewPoi(request, loginToken, requests);
+            poiId = response.data.idPoi;
+            payloads = requests;
+        });
+
+        await test.step('Validate POI detail has status Proses Survei', async () => {
+            const status = {
+                label0: 'Proses Survey',
+                label1: 'Assigned',
+            };
+            await DetailPoiCases.getPoiDetail(request, loginToken, poiId, status);
+        });
+
+        await test.step('Validate assignment POI detail has status Proses Survei', async () => {
+            const status = 'Proses Survey';
+            const getData = await getStorage('payload-addNewPoi');
+            const dataRequest = {
+                ...getData,
+                payloads,
+            };
+            await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId, status, dataRequest);
+        });
+
+        await test.step('Get Summary POI - After Add New POI', async () => {
+            await delay(2000);
+
+            const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
+            const expectedTotalPoi = summaryPoiExisting.totalPoi + 1;
+            const expectedAssignedPoi = summaryPoiExisting.assigned + 1;
+
+            BaseTestCase.assertCompare(
+                [
+                    {
+                        message: `Expected Total POI count update, from ${summaryPoiExisting.totalPoi} to ${expectedTotalPoi}`,
+                        actual: response.data.totalPoi,
+                        expected: expectedTotalPoi,
+                        useSoft: true,
+                    },
+                    {
+                        message: `Expected assigned POI count update, from ${summaryPoiExisting.assigned} to ${expectedAssignedPoi}`,
+                        actual: response.data.assigned,
+                        expected: expectedAssignedPoi,
+                        useSoft: true,
+                    },
+                ],
+                response.data,
+            );
+        });
+    });
+
+    test('Add New POI - Ecosystem based on suggest', async ({ request }) => {
+        await test.step('Verify user can get summary POI', async () => {
+            const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
+            summaryPoiExisting = response.data;
+            console.info(summaryPoiExisting);
+        });
+
+        await test.step('Choose Opportunity Business', async () => {
+            await OpportunityListCases.getOpportunityList(request, loginToken);
+        });
+
+        await test.step('Choose Sector Business', async () => {
+            await SectorListCases.getSectorList(request, loginToken, opportunityId);
+        });
+
+        await test.step('Choose Sub Sector Business', async () => {
+            await SubSectorCases.getSubSector(request, loginToken, sectorId);
+        });
+
+        await test.step('Choose Ecosystem Business', async () => {
+            selectedEcosystem = await EcosystemListCases.getEcosystemList(request, loginToken);
+            console.log(`Selected ecosystem ${selectedEcosystem} and suggest Ecosystem ${suggestEcosystem}`);
+        });
+
+        await test.step('Upload Image', async () => {
+            const filename = 'background_diponogoro.jpeg';
+            const response = await UploadImagesCases.postUploadImages(request, loginToken, filename);
+            imageUrl = response.data.url;
+        });
+
+        await test.step('Create Add New POI from MyTens', async () => {
+            const getData = getStorage('business')
+            const { sectorId, subSectorId, opportunityId, suggestEcosystem, selectedEcosystem, sectorName, subSectorName, opportunityName } = getData;
+
+            const requests = {
+                photo: imageUrl,
+                ecosystem: suggestEcosystem ?? selectedEcosystem,
+                sectorId: sectorId,
+                subSectorId: subSectorId,
+                opportunityId: opportunityId,
+                sectorName: sectorName,
+                subSectorName:subSectorName,
+                opportunityName: opportunityName
+            }
+
+            const response = await AddNewPOICases.postAddNewPoi(request, loginToken, requests);
+            poiId = response.data.idPoi;
+            payloads = requests;
+        });
+
+        await test.step('Validate POI detail has status Proses Survei', async () => {
+            const status = {
+                label0: 'Proses Survey',
+                label1: 'Assigned',
+            };
+            await DetailPoiCases.getPoiDetail(request, loginToken, poiId, status);
+        });
+
+        await test.step('Validate assignment POI detail has status Proses Survei', async () => {
+            const status = 'Proses Survey';
+            const getData = await getStorage('payload-addNewPoi');
+            const dataRequest = {
+                ...getData,
+                payloads,
+            };
+            await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId, status, dataRequest);
+        });
+
+        await test.step('Get Summary POI - After Add New POI', async () => {
+            await delay(2000);
+
+            const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
+            const expectedTotalPoi = summaryPoiExisting.totalPoi + 1;
+            const expectedAssignedPoi = summaryPoiExisting.assigned + 1;
+
+            BaseTestCase.assertCompare(
+                [
+                    {
+                        message: `Expected Total POI count update, from ${summaryPoiExisting.totalPoi} to ${expectedTotalPoi}`,
+                        actual: response.data.totalPoi,
+                        expected: expectedTotalPoi,
+                        useSoft: true,
+                    },
+                    {
+                        message: `Expected assigned POI count update, from ${summaryPoiExisting.assigned} to ${expectedAssignedPoi}`,
+                        actual: response.data.assigned,
+                        expected: expectedAssignedPoi,
+                        useSoft: true,
+                    },
+                ],
+                response.data,
+            );
+        });
     });
 
 });

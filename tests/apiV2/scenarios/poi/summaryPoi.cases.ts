@@ -1,8 +1,9 @@
-import { APIRequestContext } from '@playwright/test';
+import { APIRequestContext, expect } from '@playwright/test';
 import { PoiEndpoints } from '../../endpoints/poi.api'
 import Constants from '../../../../helpers/constants';
 import { getDataFaker } from '../../../../helpers/faker';
 import BaseTestCase from '../../../../helpers/baseTestCase';
+import SummaryPoiSchema from '../../schemas/summaryPoi.schema';
 
 class SummaryPoiCases extends BaseTestCase {
     static async getSummaryPOI(request: APIRequestContext, loginToken: string): Promise<any> {
@@ -37,7 +38,8 @@ class SummaryPoiCases extends BaseTestCase {
                 console.info("Unexpected Keys: ", unexpectedKeys);
             }
         }
-
+        
+        this.assertSchema(responseData, SummaryPoiSchema[200]);
         this.assertCompare([
             {
                 message: 'Expected response code is 200',
@@ -70,6 +72,7 @@ class SummaryPoiCases extends BaseTestCase {
         const response = await PoiEndpoints.getSummaryPoi(request, invalidToken);
         const responseData = await response.json();
 
+        this.assertSchema(responseData, SummaryPoiSchema[401]);
         this.assertCompare([
             {
                 message: 'Expected response code is 401',

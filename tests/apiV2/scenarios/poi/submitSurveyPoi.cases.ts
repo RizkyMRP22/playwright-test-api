@@ -21,7 +21,6 @@ class SubmitSurveyPoiCases extends BaseTestCase {
             fileName: infoEvidence.fileName,
             fileId: infoEvidence.fileId,
         };
-        console.log("Payload Submit Survey Poi: ",payloads)
         const data = PayloadRequest.submitSurveyPoi(payloads)
         const response = await PoiEndpoints.postSubmitSurvey(request, loginToken, data);
         const responseData = await response.json();
@@ -41,7 +40,6 @@ class SubmitSurveyPoiCases extends BaseTestCase {
             }
         ], responseData);
 
-        console.log("Response Submit Survey Poi: ",responseData)
     };
 };
 
