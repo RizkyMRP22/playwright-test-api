@@ -67,7 +67,6 @@ class PayloadRequest {
         "indibizEcosystem": "Indibiz Sekolah",
         "latitude": payload.latitude,
         "longitude": payload.longitude,
-        "coordinateAccuracy": 0.2,
         "buildingType": "Ruko"
       },
       "questionaire": {

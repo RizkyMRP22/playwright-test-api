@@ -591,5 +591,39 @@ class Constants {
             ]
         }
     ];
+
+    static POI_STATUS = {
+        DATA_MENTAH: {
+            FILTER: 'dataMentah',
+            VALUE: 'Unvalidated',
+            LABEL: 'Data Mentah',
+            COLOR: '#5A666D'
+        },
+        PROSES_SURVEY: {
+            FILTER: 'prosesSurvei',
+            VALUE: 'Assigned',
+            LABEL: 'Proses Survey',
+            COLOR: '#535E98',
+            CHILD: {
+                LABEL: 'Assigned'
+            }
+        },
+        PROSES_APPROVAL: {
+            FILTER: 'prosesApproval',
+            LABEL: 'Proses Approval - POI Hasil Survei',
+            VALUE: 'Valid Internal',
+            COLOR: '#535E98',
+            CHILD: {
+                COLOR: '#157631',
+                LABEL: 'Valid Internal'
+            }
+        },
+        VALID: {
+            FILTER: 'valid',
+            VALUE: 'Valid',
+            LABEL: 'Valid',
+            COLOR: '#157631'
+        }
+    };
 }
 export default Constants;
