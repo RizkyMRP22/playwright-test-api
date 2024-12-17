@@ -42,11 +42,10 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
         });
     });
 
-    test.only('Add New POI - Change Ecosystem', async ({ request }) => {
+    test('Add New POI - Ecosystem based on suggest', async ({ request }) => {
         await test.step('Verify user can get summary POI', async () => {
             const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
             summaryPoiExisting = response.data;
-            console.info(summaryPoiExisting);
         });
 
         await test.step('Choose Opportunity Business', async () => {
@@ -75,10 +74,10 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
         await test.step('Create Add New POI from MyTens', async () => {
             const getData = getStorage('business')
             const { sectorId, subSectorId, opportunityId, suggestEcosystem, selectedEcosystem, sectorName, subSectorName, opportunityName } = getData;
-    
+
             const requests = {
                 photo: imageUrl,
-                ecosystem: selectedEcosystem,
+                ecosystem: suggestEcosystem ?? selectedEcosystem,
                 sectorId: sectorId,
                 subSectorId: subSectorId,
                 opportunityId: opportunityId,
@@ -86,7 +85,7 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
                 subSectorName:subSectorName,
                 opportunityName: opportunityName
             }
-            
+
             const response = await AddNewPOICases.postAddNewPoi(request, loginToken, requests);
             poiId = response.data.idPoi;
             payloads = requests;
@@ -137,7 +136,7 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
         });
     });
 
-    test('Add New POI - Ecosystem based on suggest', async ({ request }) => {
+    test('Add New POI - Change Ecosystem', async ({ request }) => {
         await test.step('Verify user can get summary POI', async () => {
             const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
             summaryPoiExisting = response.data;
@@ -170,10 +169,10 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
         await test.step('Create Add New POI from MyTens', async () => {
             const getData = getStorage('business')
             const { sectorId, subSectorId, opportunityId, suggestEcosystem, selectedEcosystem, sectorName, subSectorName, opportunityName } = getData;
-
+    
             const requests = {
                 photo: imageUrl,
-                ecosystem: suggestEcosystem ?? selectedEcosystem,
+                ecosystem: selectedEcosystem,
                 sectorId: sectorId,
                 subSectorId: subSectorId,
                 opportunityId: opportunityId,
@@ -181,7 +180,7 @@ test.describe.serial('[E2E] Create Add New POI by HOTD', () => {
                 subSectorName:subSectorName,
                 opportunityName: opportunityName
             }
-
+            
             const response = await AddNewPOICases.postAddNewPoi(request, loginToken, requests);
             poiId = response.data.idPoi;
             payloads = requests;

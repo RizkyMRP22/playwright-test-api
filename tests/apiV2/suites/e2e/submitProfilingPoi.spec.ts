@@ -10,9 +10,9 @@ import SubmitSurveyPoiCases from '../../scenarios/poi/submitSurveyPoi.cases';
 import ApprovalSurveyPoiCases from '../../scenarios/poi/approvalSurvey.cases';
 import AssignmentPoiDetailCases from '../../scenarios/poi/assignmentPoiDetail.cases';
 import AssignmentPoiList from '../../scenarios/poi/assignmentList.cases';
+import Constants from '../../../../helpers/constants';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 
 interface SummaryPoi {
     totalPoi: number;
@@ -25,7 +25,9 @@ interface SummaryPoi {
 let loginToken: string;
 let email: string;
 let poiId: string;
-let summaryPoiExisting: SummaryPoi;
+let initialSummary: SummaryPoi;
+let summaryAfterAssign: SummaryPoi;
+let summaryAfterSurvey: SummaryPoi;
 
 test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
 
@@ -38,8 +40,8 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
 
         await test.step('Get POI Summary', async () => {
             const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
-            summaryPoiExisting = response.data;
-            console.info(summaryPoiExisting);
+            initialSummary = response.data;
+            console.info("initialSummary: ",initialSummary);
         });
 
         await test.step('Get POI list with Data Mentah Status', async () => {
@@ -47,7 +49,7 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
                 page: 1,
                 size: 10,
                 sort: "desc",
-                status: "dataMentah"
+                status: Constants.POI_STATUS.DATA_MENTAH.FILTER
             }
             const response = await listPoiCases.getListPoi(request, loginToken, params);
             poiId = response
@@ -66,18 +68,23 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
 
         await test.step('Get POI Summary - After Assignment POI', async () => {
             const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
-            const expectedUnvalidatedPoi = summaryPoiExisting.unvalidated - 1;
-            const expectedAssignedPoi = summaryPoiExisting.assigned + 1;
+            summaryAfterAssign = response.data;
+            console.log("summaryAfterAssign: ",summaryAfterAssign)
+            const expectedUnvalidatedPoi = initialSummary.unvalidated - 1;
+            const expectedAssignedPoi = initialSummary.assigned + 1;
+            console.info("expectedUnvalidatedPoi: ",expectedUnvalidatedPoi);
+            console.info("expectedAssignedPoi: ",expectedAssignedPoi);
+
 
             BaseTestCase.assertCompare([
                 {
-                    message: `Expected Unvalidated POI count update, from ${summaryPoiExisting.unvalidated} to ${expectedUnvalidatedPoi}`,
+                    message: `Expected Unvalidated POI count update, from ${initialSummary.unvalidated} to ${expectedUnvalidatedPoi}`,
                     actual: response.data.unvalidated,
                     expected: expectedUnvalidatedPoi,
                     useSoft: true
                 },
                 {
-                    message: `Expected Assigned POI count to updated, from ${summaryPoiExisting.assigned} to ${expectedAssignedPoi}`,
+                    message: `Expected Assigned POI count to updated, from ${initialSummary.assigned} to ${expectedAssignedPoi}`,
                     actual: response.data.assigned,
                     expected: expectedAssignedPoi,
                     useSoft: true
@@ -87,8 +94,8 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
 
         await test.step('Get POI detail with status Proses Survey', async () => {
             const status = {
-                label0:'Proses Survey',
-                label1: 'Assigned'
+                label0:Constants.POI_STATUS.PROSES_SURVEY.LABEL,
+                label1: Constants.POI_STATUS.PROSES_SURVEY.CHILD.LABEL
             }
             await DetailPoiCases.getPoiDetail(request, loginToken, poiId, status);
         });
@@ -98,7 +105,7 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
         });
 
         await test.step('Get assignment POI detail with status Proses Survey', async () => {
-            const status = 'Proses Survey';
+            const status = Constants.POI_STATUS.PROSES_SURVEY.LABEL;
             await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId,status);
         });
 
@@ -118,8 +125,8 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
 
         await test.step('Get POI detail with status Valid Internal', async () => {
             const status = {
-                label0:'Proses Approval - POI Hasil Survei',
-                label1: 'Valid Internal'
+                label0:Constants.POI_STATUS.PROSES_APPROVAL.LABEL,
+                label1: Constants.POI_STATUS.PROSES_APPROVAL.CHILD.LABEL
             }
             await DetailPoiCases.getPoiDetail(request, loginToken, poiId, status);
         });
@@ -131,18 +138,19 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
 
         await test.step('Get POI Summary - After Submit Survey POI', async () => {
             const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
-            const expectedAssignedPoi = summaryPoiExisting.assigned;
-            const expectedApprovalProcessValidInternal = summaryPoiExisting.approvalProcessValidInternal + 1;
+            summaryAfterSurvey = response.data;
+            const expectedAssignedPoi = summaryAfterAssign.assigned-1;
+            const expectedApprovalProcessValidInternal = summaryAfterAssign.approvalProcessValidInternal + 1;
 
             BaseTestCase.assertCompare([
                 {
-                    message: `Expected Valid Internal POI count update, from ${summaryPoiExisting.approvalProcessValidInternal} to ${expectedApprovalProcessValidInternal}`,
+                    message: `Expected Valid Internal POI count update, from ${summaryAfterAssign.approvalProcessValidInternal} to ${expectedApprovalProcessValidInternal}`,
                     actual: response.data.approvalProcessValidInternal,
                     expected: expectedApprovalProcessValidInternal,
                     useSoft: true
                 },
                 {
-                    message: `Expected Assigned POI count to updated, from ${summaryPoiExisting.assigned + 1} to ${expectedAssignedPoi}`,
+                    message: `Expected Assigned POI count to updated, from ${summaryAfterAssign.assigned + 1} to ${expectedAssignedPoi}`,
                     actual: response.data.assigned,
                     expected: expectedAssignedPoi,
                     useSoft: true
@@ -167,7 +175,7 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
             const payload = {
                 poiId,
                 email,
-                action:'valid'
+                action: Constants.POI_STATUS.VALID.FILTER
 
             }
             await ApprovalSurveyPoiCases.postApprovalSurvey(request,loginTokenMGR, payload);
@@ -177,30 +185,31 @@ test.describe.serial('[E2E] Submit Profiling POI by HOTD', () => {
     test('HOTD will get POI whose status is already valid', async ({ request }) => {
         await test.step('Get POI detail with status Proses Survey', async () => {
             const status = {
-                label0:'Valid',
+                label0:Constants.POI_STATUS.VALID.LABEL,
             }
             await DetailPoiCases.getPoiDetail(request, loginToken, poiId, status);
         });
 
         await test.step('Get assignment POI detail with status Valid', async () => {
-            const status = 'Valid';
+            const status = Constants.POI_STATUS.VALID.LABEL;
             await AssignmentPoiDetailCases.getAssignmentPoiDetail(request, loginToken, poiId,status);
         });
 
         await test.step('Get POI Summary - After Validated Survey POI', async () => {
             const response = await SummaryPoiCases.getSummaryPOI(request, loginToken);
-            const expectedApprovalProcessValidInternal = summaryPoiExisting.approvalProcessValidInternal;
-            const expectedValid = summaryPoiExisting.valid + 1;
+            const summaryAfterApprove = response.data;
+            const expectedApprovalProcessValidInternal = summaryAfterSurvey.approvalProcessValidInternal-1;
+            const expectedValid = summaryAfterSurvey.valid + 1;
 
             BaseTestCase.assertCompare([
                 {
-                    message: `Expected Valid Internal POI count update, from ${summaryPoiExisting.approvalProcessValidInternal+1} to ${expectedApprovalProcessValidInternal}`,
+                    message: `Expected Valid Internal POI count update, from ${summaryAfterSurvey.approvalProcessValidInternal} to ${expectedApprovalProcessValidInternal}`,
                     actual: response.data.approvalProcessValidInternal,
                     expected: expectedApprovalProcessValidInternal,
                     useSoft: true
                 },
                 {
-                    message: `Expected Valid POI count to updated, from ${summaryPoiExisting.valid} to ${expectedValid}`,
+                    message: `Expected Valid POI count to updated, from ${summaryAfterSurvey.valid} to ${expectedValid}`,
                     actual: response.data.valid,
                     expected: expectedValid,
                     useSoft: true

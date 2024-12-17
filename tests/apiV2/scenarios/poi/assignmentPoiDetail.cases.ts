@@ -87,8 +87,8 @@ class AssignmentPoiDetailCases extends BaseTestCase {
                 },
                 {
                     message: `Expected subSectorName match with request`,
-                    actual: responseData.data.businessData.subSector,
-                    expected: payload.getData.subSectorName,
+                    actual: responseData.data.businessData.subSectorName,
+                    expected: payload.getData.subSector,
                     useSoft: true
                 },
                 {

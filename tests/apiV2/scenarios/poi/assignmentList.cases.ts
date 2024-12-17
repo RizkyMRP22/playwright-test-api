@@ -8,29 +8,33 @@ class AssignmentPoiList extends BaseTestCase {
     static async getAssignmentPoiList(request: APIRequestContext, loginToken: string, poiId?:any, params?: any): Promise<any> {
         const getData = await JSON.parse(getStorage('poiDetail-e2e'))
         const poiName = getData.name
+        const idPoi = getData.idPoi
 
         const payload = {
-            search: poiName
+            search: params?.search ?? poiName
         }
         
         const response = await PoiEndpoints.getAssignmentPoiList(request, loginToken, payload ?? params);
         const responseData = await response.json();
 
-        if (poiId) {
-            const isIdPoiPresent = responseData.data.some((poi: any) => poi.id === Number(poiId));
+        console.info(responseData);
 
+        if (poiId ?? idPoi) {
+            const isIdPoiPresent = responseData.data.some((poi: any) => poi.id === Number(poiId ?? idPoi));
+            this.logger('info', `isIdPoiPresent: ${isIdPoiPresent}`);
             this.assertCompare([
                 {
-                    message: `Expected POI ID: ${poiId} is show in list`,
+                    message: `Expected POI ID: ${poiId ?? idPoi} is show in list`,
                     actual: isIdPoiPresent,
                     expected:true,
                     useSoft: true
                 },
                 {
-                    message: `Expected POI Name: ${poiName} is show in list`,
+                    message: `Expected POI Name: ${params?.search ?? poiName} is show in list`,
                     actual: responseData.data[0].name,
-                    expected:poiName,
-                    useSoft: true
+                    expected:params?.search ?? poiName,
+                    useSoft: true,
+                    contains: true
                 }
             ], responseData);
         }

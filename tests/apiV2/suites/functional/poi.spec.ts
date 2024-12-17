@@ -68,8 +68,11 @@ test.describe('API GET Detail POI', () => {
 test.describe('API GET List Assignment POI', () => {
 
     test('[200] Verify user can get List Assignment POI', async ({ request }) => {
-        const poiId = '3847769'
-        await AssignmentPoiList.getAssignmentPoiList(request, loginToken, poiId);
+        const poiId = '63347368'
+        const params = {
+            search: "Damanik"
+        }
+        await AssignmentPoiList.getAssignmentPoiList(request, loginToken, poiId, params);
     });
 
 });
@@ -141,13 +144,13 @@ test.describe.serial('GET BUSINESS SEGMENT', () => {
 let sectorId: number;
 let subSectorId: number;
 let suggestEcosystem:string;
-    test.only('[200] Verify user can get list opportunities business', async ({ request }) => {
+    test('[200] Verify user can get list opportunities business', async ({ request }) => {
         opportunityId =  await OpportunityListCases.getOpportunityList(request, loginToken);
      });
-     test.only('[200] Verify user can get list Sector business', async ({ request }) => {
+     test('[200] Verify user can get list Sector business', async ({ request }) => {
         sectorId = await SectorListCases.getSectorList(request, loginToken, opportunityId);
     });
-    test.only('[200] Verify user can get list Sub Sector business', async ({ request }) => {
+    test('[200] Verify user can get list Sub Sector business', async ({ request }) => {
         const response = await SubSectorCases.getSubSector(request, loginToken, sectorId);
         subSectorId = response.subSectorId;
         suggestEcosystem = response.ecosystem

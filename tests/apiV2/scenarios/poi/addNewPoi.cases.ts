@@ -43,12 +43,6 @@ class AddNewPoiCases extends BaseTestCase {
                 actual: responseData.message,
                 expected: 'berhasil mengirim data',
                 useSoft: true
-            },
-            {
-                message: 'Expected message is "berhasil mengirim data"',
-                actual: responseData.message,
-                expected: 'berhasil mengirim data',
-                useSoft: true
             }
         ], responseData);
 

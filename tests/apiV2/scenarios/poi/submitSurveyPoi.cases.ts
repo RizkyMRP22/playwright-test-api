@@ -9,7 +9,7 @@ class SubmitSurveyPoiCases extends BaseTestCase {
         const payload = JSON.parse(getStorage('poiDetail-e2e'));
         const infoEvidence = JSON.parse(getStorage("evidence-upload"));
         const payloads = {
-            poiId: payload.idPoi,
+            poiId: Number(payload.idPoi),
             poiName: payload.name,
             sector: payload.segment.sector,
             subSector: payload.segment.subSector,
