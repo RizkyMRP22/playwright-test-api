@@ -41,8 +41,11 @@ class PayloadRequest {
       name: extractData.poiName,
       ecosystem: payload.ecosystem,
       sectorId: payload.sectorId,
+      sector: payload.sectorName,
       subsectorId: payload.subSectorId,
+      subSector: payload.subSectorName,
       opportunityId: payload.opportunityId,
+      opportunity: payload.opportunityName,
       photo:payload.photo
     };
   }
@@ -64,7 +67,6 @@ class PayloadRequest {
         "indibizEcosystem": "Indibiz Sekolah",
         "latitude": payload.latitude,
         "longitude": payload.longitude,
-        "coordinateAccuracy": 0.2,
         "buildingType": "Ruko"
       },
       "questionaire": {

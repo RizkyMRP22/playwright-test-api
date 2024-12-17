@@ -15,20 +15,27 @@ class SectorListCases extends BaseTestCase {
 
         const response = await PoiEndpoints.getSectorList(request, loginToken, queryParams);
         const responseData = await response.json();  
+
+        this.logger("info","jumlah data sector:",responseData.data.length)
+
         const constant = Constants.expectedOpportunities
 
         let sectorId: any;
+        let sectorName:any;
 
         if (responseData.data.length >= 1) {
             const randomIndex = Math.floor(Math.random() * responseData.data.length);
             const selected = responseData.data[randomIndex];
             sectorId = selected.id;
-            saveStorageNew('business',{sectorId})
+            sectorName = selected.name
+            const payload={
+                sectorId,
+                sectorName
+            }
+            saveStorageNew('business',payload)
         } else {
             console.warn('Expected more than 1 record but got:', responseData.data.length);
         }
-
-        this.logger('info','sectorId Selected', sectorId)
 
         const simplifiedExpectedData = constant
         .filter((opportunity: { id: number; sector: { id: number; name: string; opportunityId: number }[] }) =>

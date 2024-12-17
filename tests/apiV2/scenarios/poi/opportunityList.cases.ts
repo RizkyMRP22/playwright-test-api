@@ -11,18 +11,22 @@ class OpportunityListCases extends BaseTestCase {
         const constant = Constants.expectedOpportunities
 
         let opportunityId: any;
+        let opportunityName: any;
+
 
         if (responseData.data.length >= 1) {
             const randomIndex = Math.floor(Math.random() * responseData.data.length);
             const selectedOpportunity = responseData.data[randomIndex];
             opportunityId = selectedOpportunity.id;
-            saveStorageNew('business',{opportunityId})
+            opportunityName = selectedOpportunity.name
+            const payload = {
+                opportunityId,
+                opportunityName
+            }
+            saveStorageNew('business',payload)
         } else {
             console.warn('Expected more than 1 record but got:', responseData.data.length);
         }
-
-        this.logger('info','opportunityId Selected', opportunityId)
-
         const simplifiedExpectedData = constant.map((opportunity: { id: number, name: string }) => ({
             id: opportunity.id,
             name: opportunity.name

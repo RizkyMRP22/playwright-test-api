@@ -9,7 +9,7 @@ class SubmitSurveyPoiCases extends BaseTestCase {
         const payload = JSON.parse(getStorage('poiDetail-e2e'));
         const infoEvidence = JSON.parse(getStorage("evidence-upload"));
         const payloads = {
-            poiId: payload.idPoi,
+            poiId: Number(payload.idPoi),
             poiName: payload.name,
             sector: payload.segment.sector,
             subSector: payload.segment.subSector,
@@ -21,7 +21,6 @@ class SubmitSurveyPoiCases extends BaseTestCase {
             fileName: infoEvidence.fileName,
             fileId: infoEvidence.fileId,
         };
-        console.log("Payload Submit Survey Poi: ",payloads)
         const data = PayloadRequest.submitSurveyPoi(payloads)
         const response = await PoiEndpoints.postSubmitSurvey(request, loginToken, data);
         const responseData = await response.json();
@@ -41,7 +40,6 @@ class SubmitSurveyPoiCases extends BaseTestCase {
             }
         ], responseData);
 
-        console.log("Response Submit Survey Poi: ",responseData)
     };
 };
 

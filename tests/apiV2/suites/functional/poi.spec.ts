@@ -41,11 +41,9 @@ test.describe('API GET List POI', () => {
         const params = {
             page: 1,
             size: 10,
-            sort: "desc",
-            status: "dataMentah"
+            sort: "desc"
         }
        const response = await listPoiCases.getListPoi(request, loginToken, params);
-       console.log(response);
        poiId = response
        saveStorage('poiId', poiId);
     });
@@ -69,11 +67,12 @@ test.describe('API GET Detail POI', () => {
 
 test.describe('API GET List Assignment POI', () => {
 
-    test('[200] Verify user can get Assignment POI detail', async ({ request }) => {
+    test('[200] Verify user can get List Assignment POI', async ({ request }) => {
+        const poiId = '63347368'
         const params = {
-            status : 'valid'
+            search: "Damanik"
         }
-        await AssignmentPoiList.getAssignmentPoiList(request, loginToken, params);
+        await AssignmentPoiList.getAssignmentPoiList(request, loginToken, poiId, params);
     });
 
 });
@@ -136,56 +135,27 @@ test.describe('API GET List Survey POI', () => {
 test.describe('API POST Upload Images', () => {
     test('[200] Verify User can upload image for activity evidence', async ({ request }) => { 
         const poiId = '10224686';
-        const response = await UploadImagesCases.postEvidence(request, loginToken, poiId)
-        console.log('response: ', response);
+        await UploadImagesCases.postEvidence(request, loginToken, poiId)
     })
 });
-
-// test.describe('API GET List Opportunities Business', () => {
-//     test.only('[200] Verify user can get list opportunities business', async ({ request }) => {
-//        opportunityId =  await OpportunityListCases.getOpportunityList(request, loginToken);
-//     });
-// });
-
-// test.describe('API GET List Sector Business', () => {
-//     test.only('[200] Verify user can get list Sector business', async ({ request }) => {
-//         sectorId = await SectorListCases.getSectorList(request, loginToken, opportunityId);
-//     });
-// });
-
-// test.describe('API GET List Sub Sector Business', () => {
-//     test.only('[200] Verify user can get list Sub Sector business', async ({ request }) => {
-//         const response = await SubSectorCases.getSubSector(request, loginToken, sectorId);
-//         expectedEcosystem = response.ecosystem
-//     });
-// });
-
-// test.describe('API GET List Ecosystem Business', () => {
-//     test.only('[200] Verify user can get list ecosystem business', async ({ request }) => {
-//         const response  = await EcosystemListCases.getEcosystemList(request, loginToken);
-//         console.log(`Actual ecosystem ${response} and expected ecosystem ${expectedEcosystem}`)
-//     });
-// });
-
-
 
 test.describe.serial('GET BUSINESS SEGMENT', () => {
     let opportunityId: number;
 let sectorId: number;
 let subSectorId: number;
 let suggestEcosystem:string;
-    test.only('[200] Verify user can get list opportunities business', async ({ request }) => {
+    test('[200] Verify user can get list opportunities business', async ({ request }) => {
         opportunityId =  await OpportunityListCases.getOpportunityList(request, loginToken);
      });
-     test.only('[200] Verify user can get list Sector business', async ({ request }) => {
+     test('[200] Verify user can get list Sector business', async ({ request }) => {
         sectorId = await SectorListCases.getSectorList(request, loginToken, opportunityId);
     });
-    test.only('[200] Verify user can get list Sub Sector business', async ({ request }) => {
+    test('[200] Verify user can get list Sub Sector business', async ({ request }) => {
         const response = await SubSectorCases.getSubSector(request, loginToken, sectorId);
         subSectorId = response.subSectorId;
         suggestEcosystem = response.ecosystem
     });
-    test.only('[200] Verify user can get list ecosystem business', async ({ request }) => {
+    test('[200] Verify user can get list ecosystem business', async ({ request }) => {
         const selectedEcosystem  = await EcosystemListCases.getEcosystemList(request, loginToken);
         console.log(`Actual ecosystem ${selectedEcosystem} and suggestEcosystem ecosystem ${suggestEcosystem}`)
     });

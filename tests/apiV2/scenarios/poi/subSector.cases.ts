@@ -11,27 +11,31 @@ class SubSectorCases extends BaseTestCase {
         const response = await PoiEndpoints.getSubSectorList(request, loginToken);
         const responseData = await response.json();  
 
+        this.logger("info","jumlah data subSector:",responseData.data.length)
+
         const filteredData = responseData.data.filter((item: { sectorId: number }) => item.sectorId === sectorId);
         let subSectorId: any;
         let actualSectorId: any;
         let suggestEcosystem: any;
+        let subSectorName:any
 
         if (filteredData.length >= 1) {
             const randomIndex = Math.floor(Math.random() * filteredData.length);
             const selected = filteredData[randomIndex];
             subSectorId = selected.id;
+            subSectorName = selected.name;
             actualSectorId= selected.sectorId
             suggestEcosystem = selected.ecosystem
             const payload = {
+                actualSectorId,
                 subSectorId,
+                subSectorName,
                 suggestEcosystem
             }
             saveStorageNew('business',payload)
         } else {
             console.warn('Expected more than 1 record but got:', filteredData.length);
         }
-
-        this.logger('info','subSectorId Selected', subSectorId)
 
         this.assertCompare([
             {

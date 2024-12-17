@@ -101,8 +101,14 @@ class DetailPoiCases extends BaseTestCase {
                     actual: responseData.data.information.lat,
                     expected: payload.latitude.toString(),
                     useSoft: true
+                },
+                {
+                    message: `Expected Opportunity match with request`,
+                    actual: responseData.data.information.lat,
+                    expected: payload.latitude.toString(),
+                    useSoft: true
                 }
-            ], console.log(responseData));
+            ], responseData);
             return responseData;
         }
     };

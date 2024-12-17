@@ -18,8 +18,6 @@ class EcosystemListCases extends BaseTestCase {
         } else {
             console.warn('Expected more than 1 record but got:', responseData.data.length);
         }
-
-        this.logger('info', 'Selected Ecosystem', selectedEcosystem)
         
         this.assertCompare([
             {

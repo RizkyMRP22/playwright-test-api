@@ -2,6 +2,7 @@ import { APIRequestContext } from '@playwright/test';
 import { PoiEndpoints } from '../../endpoints/poi.api';
 import BaseTestCase from '../../../../helpers/baseTestCase';
 import { saveStorage } from '../../../../helpers/parsingData';
+import listPoiSchema from '../../schemas/listPoi.schema';
 
 interface Params {
     page: number;
@@ -29,6 +30,8 @@ class listPoiCases extends BaseTestCase {
         
         const response = await PoiEndpoints.getPoiList(request, loginToken, queryParams);
         const responseData = await response.json();
+
+        this.assertSchema(responseData, listPoiSchema[200]);
 
         this.assertCompare([
             {
@@ -73,7 +76,6 @@ class listPoiCases extends BaseTestCase {
 
         return poiId;
     }
-
 
 }
 

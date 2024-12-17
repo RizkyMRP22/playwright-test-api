@@ -7,7 +7,7 @@
     "start": "npx playwright test tests/apiV2/suites",
     "add-new": "npx playwright test tests/apiV2/suites/e2e/addNewPoi.spec.ts",
     "submit-poi": "npx playwright test tests/apiV2/suites/e2e/submitProfilingPoi.spec.ts",
-    "functional": "npx playwright test tests/api/suites/functional",
+    "functional": "npx playwright test tests/apiV2/suites/functional",
     "report": "npx playwright show-report"
   },
   "keywords": [],
