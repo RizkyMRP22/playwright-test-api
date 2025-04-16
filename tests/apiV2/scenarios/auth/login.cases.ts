@@ -65,7 +65,9 @@ class LoginCases extends BaseTestCase {
      * Invalid login scenario repeated 5 times to trigger lockout.
      */
     static async invalidLogin5Times(request: APIRequestContext): Promise<any> {
-        const payload = { username: process.env.NIK_OTHERS };
+        const payload = { username: process.env.NIK_OTHERS,
+            password: process.env.INVALID_PASS
+         };
 
         for (let attempt = 1; attempt <= 3; attempt++) {
             const response = await AuthEndpoints.postLogin(request, payload);
@@ -111,7 +113,13 @@ class LoginCases extends BaseTestCase {
                     useSoft: true,
                 },
                 {
-                    message: 'Expected details.eventCode is 5',
+                    message: 'Expected details.eventCode is "Terjadi Kesalahan"',
+                    actual: responseData.details.title,
+                    expected: "Terjadi Kesalahan",
+                    useSoft: true,
+                },
+                {
+                    message: 'Expected details.title is 5',
                     actual: responseData.details.eventCode,
                     expected: 5,
                     useSoft: true,

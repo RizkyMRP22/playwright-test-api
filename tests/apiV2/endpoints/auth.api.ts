@@ -40,7 +40,7 @@ export class AuthEndpoints extends BaseAPI {
     ): Promise<APIResponse> {
         const body = {
             username: auth?.username ?? process.env.NIK,
-            password: auth?.password ?? process.env.PASSWORD,
+            password: auth?.password ?? process.env.PASSWORD_DEFAULT,
         };
 
         return this.callAPI(

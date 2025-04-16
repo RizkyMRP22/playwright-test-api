@@ -11,7 +11,7 @@ export const login = async (request: APIRequestContext, nik?:string, password?:s
         },
         data: {
             username: nik ?? process.env.NIK,
-            password: password ?? process.env.PASSWORD
+            password: password ?? process.env.PASSWORD_DEFAULT
         }
     });
     return response;

@@ -8,6 +8,8 @@
     "add-new": "npx playwright test tests/apiV2/suites/e2e/addNewPoi.spec.ts",
     "submit-poi": "npx playwright test tests/apiV2/suites/e2e/submitProfilingPoi.spec.ts",
     "functional": "npx playwright test tests/apiV2/suites/functional",
+    "menu": "npx playwright test tests/api/suites/functional/general/menuUsers.spec.ts",
+    "auth": "npx playwright test tests/apiV2/suites/functional/auth.spec.ts",
     "report": "npx playwright show-report"
   },
   "keywords": [],
