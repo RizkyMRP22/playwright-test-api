@@ -10,7 +10,11 @@
     "functional": "npx playwright test tests/apiV2/suites/functional",
     "menu": "npx playwright test tests/api/suites/functional/general/menuUsers.spec.ts",
     "auth": "npx playwright test tests/apiV2/suites/functional/auth.spec.ts",
-    "report": "npx playwright show-report"
+    "report": "npx playwright show-report",
+    "prepare-gh-pages": "rm -rf docs && cp -r playwright-report docs",
+    "deploy-gh-pages": "npm run auth && npm run prepare-gh-pages && git add docs && git commit -m 'update report' && git push github gh-pages",
+    "build-report": "rm -rf playwright-report && playwright test",
+    "deploy-report": "gh-pages -d playwright-report"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +32,7 @@
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-playwright": "^2.0.1",
+    "gh-pages": "^6.3.0",
     "globals": "^15.13.0",
     "playwright-msteams-reporter": "^0.0.12",
     "prettier": "3.3.3",
