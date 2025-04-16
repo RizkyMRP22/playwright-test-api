@@ -11,10 +11,7 @@
     "menu": "npx playwright test tests/api/suites/functional/general/menuUsers.spec.ts",
     "auth": "npx playwright test tests/apiV2/suites/functional/auth.spec.ts",
     "report": "npx playwright show-report",
-    "prepare-gh-pages": "rm -rf docs && cp -r playwright-report docs",
-    "deploy-gh-pages": "npm run auth && npm run prepare-gh-pages && git add docs && git commit -m 'update report' && git push github gh-pages",
-    "build-report": "rm -rf playwright-report && playwright test",
-    "deploy-report": "gh-pages -d playwright-report"
+    "deploy-report": "npx gh-pages -d playwright-report -f --remote=github"
   },
   "keywords": [],
   "author": "",
